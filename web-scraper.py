@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys  # Import Keys module
+from selenium.webdriver.common.keys import Keys 
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 
@@ -10,19 +10,22 @@ class search_result:
         self.site = None
         self.link = None
         self.title = None
+        self.text = None
 
-    def assign(self,site = None, link = None, title = None):
+    def assign(self,site = None, link = None, title = None, text = None):
         if site != None:
             self.site = site
         if link != None:
             self.link = link
         if title != None:
             self.title = title
+        if text != None:
+            self.text = text
 
-    def display(self):
-            print("Values of the attributes:")
+    def display(self, display_length_max):
+            # print("Values of the attributes:")
             for key, value in vars(self).items():
-                print(f"{key}: {value}")
+                print(f"{key}: {value[:min(len(value),display_length_max)]}")
             print()
 
 def get_chrome_driver():
@@ -41,7 +44,7 @@ def get_chrome_driver():
 def output_to_csv(scraped_data):
     pass
 
-def scrape_google_search_results(queries, num_results=10):
+def scrape_google(queries, num_urls = 9, num_pages = 1):
     driver = get_chrome_driver()
 
     all_results = []
@@ -60,42 +63,62 @@ def scrape_google_search_results(queries, num_results=10):
         
         # Extract links from search results
         result_objects = []
-        tempvar = num_results
+        tempvar = min(len(search_results),num_urls)
         for result in search_results[:tempvar]:
             if "people also ask" in result.text.lower():
-                tempvar += 1
+                tempvar += 1 if tempvar < len(search_results) - 1 else 0
                 continue
 
             cool_little_thing = search_result()
 
             try:
                 link = result.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
-                cool_little_thing.assign(link=link)
-
+                
                 site = result.find_element(By.CSS_SELECTOR,'a')
-                h3 = site.find_element(By.XPATH,"./h3")
-                title = h3.text
-                cool_little_thing.assign(title = title)
-            
-                site = site.find_element(By.XPATH,"./div/div/div/div/span").text
-                cool_little_thing.assign(site=site)
+                title = site.find_element(By.XPATH,"./h3").text
 
+                site = site.find_element(By.XPATH,"./div/div/div/div/span").text
+                
+                cool_little_thing.assign(site, link, title)
             except Exception as e:
                 print(f"An error occurred while extracting links: {e}")
-            result_objects.append(cool_little_thing)
+            
+            if cool_little_thing.site != None or cool_little_thing.link != None:
+                result_objects.append(cool_little_thing)
 
         all_results.extend(result_objects)
 
-        time.sleep(2)  # Adding a delay to prevent hitting Google's rate limits
+        time.sleep(2)  # Delay to prevent hitting Google's rate limits
 
     driver.quit()
 
     return all_results
 
-# Example usage
+def expand_results(search_result_objects):
+    driver = get_chrome_driver()
+    for search_result in search_result_objects:
+        driver.get(search_result.link)
+
+        try:
+            page_body = driver.find_element(By.CSS_SELECTOR, 'body')
+
+            search_result.assign(text = page_body.text)
+        except Exception as e:
+            print(f"An error occurred while extracting text: {e}")
+        
+        time.sleep(2) # Delay to prevent hitting Google's rate limits
+    
+    driver.quit()
+
 queries = ["machine learning"]
-search_results = scrape_google_search_results(queries, num_results=10)
+number_of_pages_to_scrape = 1 #TODO, still need to implement
+number_of_urls_per_page = 50
+maximum_text_display_length = 500
+
+search_results = scrape_google(queries, num_urls= number_of_urls_per_page, 
+        num_pages = number_of_pages_to_scrape)  #   Gets websites and urls from specified pages of google
+expand_results(search_results)  #   Accesses links and gets text
 print("Search Results:")
 for i, result in enumerate(search_results):
     print(f"Result {i+1}")
-    result.display()
+    result.display(maximum_text_display_length)

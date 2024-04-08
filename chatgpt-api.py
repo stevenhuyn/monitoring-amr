@@ -25,3 +25,9 @@ print("ChatGPT's response:", response)
 
 # # Call the function to install openai
 # install_openai()
+
+
+# Please tell me the date it was written, briefly what it covers and who wrote it in the format:
+# Author: <author>
+# Date: <day-month-year>
+# Summary: <brief summary, no more than 4 sentences>
