@@ -5,6 +5,33 @@ from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 
+'''
+TODO
+Search Object
+    Improve assigning
+    Add more variables
+
+Scraping
+    Filter items by date
+    Don't scrape everything - scrape only certain tags
+    Investiage reader mode
+    Implement number of pages / number of urls
+    Method for scraping google VS specific pages that we want to keep track of
+
+
+Things to search
+    Date                    The date the article was written
+    Outbreak Date           The date the outbreak was seen to have started or a date mentioned that concerns the outbreak.
+    Human Scale             The number of people affected.
+    City Scale              The number of cities affected.
+    Region Scale            The number of regions affected.
+    Locations               A comma separated list of locations.
+    Anti-microbial Use      Were anti-microbials administered.
+    Case                    ?? Resistance?? 
+    Locations               A comma separated list of locations.
+
+'''
+
 class search_result:
     def __init__(self):
         self.site = None
@@ -60,6 +87,10 @@ def scrape_google(queries, num_urls = 9, num_pages = 1):
 
         # Find all the search result elements
         search_results = driver.find_elements(By.CLASS_NAME, 'ULSxyf') + driver.find_elements(By.CLASS_NAME, 'MjjYud')
+
+        if len(search_results) < 3:
+            search_results = driver.find_elements(By.XPATH,"//body[@id='gsr']//*[contains(@class, 'TzHB6b cLjAic K7khPe')]")
+            print("made it this far",len(search_results))
         
         # Extract links from search results
         result_objects = []
@@ -72,12 +103,12 @@ def scrape_google(queries, num_urls = 9, num_pages = 1):
             cool_little_thing = search_result()
 
             try:
-                link = result.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
-                
-                site = result.find_element(By.CSS_SELECTOR,'a')
-                title = site.find_element(By.XPATH,"./h3").text
+                web_page_front = result.find_element(By.CSS_SELECTOR,'a')
 
-                site = site.find_element(By.XPATH,"./div/div/div/div/span").text
+                link = web_page_front.get_attribute('href')
+                title = web_page_front.find_element(By.XPATH,"./h3").text
+
+                site = web_page_front.find_element(By.XPATH,"./div/div/div/div/span").text #TODO Make better with xpath
                 
                 cool_little_thing.assign(site, link, title)
             except Exception as e:
@@ -112,7 +143,7 @@ def expand_results(search_result_objects):
 
 queries = ["machine learning"]
 number_of_pages_to_scrape = 1 #TODO, still need to implement
-number_of_urls_per_page = 50
+number_of_urls_per_page = 3
 maximum_text_display_length = 500
 
 search_results = scrape_google(queries, num_urls= number_of_urls_per_page, 
