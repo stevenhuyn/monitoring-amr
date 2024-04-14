@@ -33,7 +33,8 @@ Things to search
 '''
 
 class search_result:
-    def __init__(self):
+    def __init__(self,query):
+        self.query = None
         self.site = None
         self.link = None
         self.title = None
@@ -103,7 +104,7 @@ def scrape_google(queries, num_urls = 9, num_pages = 1):
                 searchlimit += 1
                 continue
             #   instantiating result object
-            cool_little_thing = search_result()
+            cool_little_thing = search_result(query)
             try:
                 web_page_front = result.find_element(By.CSS_SELECTOR,'a')
                 #   Getting metadata and the url
@@ -134,8 +135,9 @@ def expand_results(search_result_objects):
         time.sleep(5)
         try:
             #   getting capturing and storing text
-            p_selectors = driver.find_elements(By.XPATH, '//body//p | //body//ol | //body//ul')
-            text = '\n'.join([p.text for p in p_selectors])
+            p_selectors = driver.find_elements(By.XPATH, '//body//p')
+            l_selectors = driver.find_elements(By.XPATH, '//body//ol | //body//ul')
+            text = '\n'.join([item.text for item in p_selectors + l_selectors ])
             search_result.assign(text = text)
         except Exception as e:
             print(f"An error occurred while extracting text: {e}")
