@@ -1,6 +1,6 @@
 import openai
 
-def get_chat_response(prompt, api_key):
+def get_chat_response(prompt, api_key, engine = 'gpt-3.5-turbo-0125'):
     openai.api_key = api_key
 
     # Sending the prompt to the API
@@ -12,26 +12,8 @@ def get_chat_response(prompt, api_key):
 
     return response.choices[0].text.strip()
 
-# Example usage
-api_key = "your_openai_api_key_here"
-prompt = "Q: What is the capital of France?\nA: The capital of France is"
-response = get_chat_response(prompt, api_key)
-print("ChatGPT's response:", response)
+def main():
+    print('testing vibes')
 
-# import subprocess
-
-# def install_openai():
-#     subprocess.call(['pip', 'install', 'openai'])
-
-# # Call the function to install openai
-# install_openai()
-
-
-# Please tell me the date it was written, briefly what it covers and who wrote it in the format:
-# Author: <author>
-# Date: <day-month-year>
-# Summary: <brief summary, no more than 4 sentences>
-
-
-#### Hi Caleb
-#### Howdy
+if __name__ == 'main':
+    main()

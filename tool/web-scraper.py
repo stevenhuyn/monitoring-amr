@@ -84,39 +84,40 @@ def scrape_google(queries, num_urls = 9, num_pages = 1):
         search_box.clear()
         search_box.send_keys(query)
         search_box.send_keys(Keys.RETURN)
+        time.sleep(2)
 
         # Find all the search result elements
-        search_results = driver.find_elements(By.CLASS_NAME, 'ULSxyf') + driver.find_elements(By.CLASS_NAME, 'MjjYud')
-
+        search_results = driver.find_elements(By.XPATH,"//body[@id='gsr']//*[contains(@class, 'MjjYud')]")
+        #   for image-focused pages
         if len(search_results) < 3:
             search_results = driver.find_elements(By.XPATH,"//body[@id='gsr']//*[contains(@class, 'TzHB6b cLjAic K7khPe')]")
-            print("made it this far",len(search_results))
-        
         # Extract links from search results
         result_objects = []
-        tempvar = min(len(search_results),num_urls)
-        for result in search_results[:tempvar]:
+        searchlimit = num_urls
+        for i, result in enumerate(search_results):
+            #   stopping when the limit is reached
+            if i >= searchlimit:
+                break
+            #   checking the page isn't the google suggestion box
             if "people also ask" in result.text.lower():
-                tempvar += 1 if tempvar < len(search_results) - 1 else 0
+                searchlimit += 1
                 continue
-
+            #   instantiating result object
             cool_little_thing = search_result()
-
             try:
                 web_page_front = result.find_element(By.CSS_SELECTOR,'a')
-
+                #   Getting metadata and the url
                 link = web_page_front.get_attribute('href')
                 title = web_page_front.find_element(By.XPATH,"./h3").text
-
-                site = web_page_front.find_element(By.XPATH,"./div/div/div/div/span").text #TODO Make better with xpath
-                
+                site = web_page_front.find_element(By.XPATH,"//*[contains(@class, 'qLRx3b tjvcx GvPZzd cHaqb')]").text
+                #   Storing in result object
                 cool_little_thing.assign(site, link, title)
             except Exception as e:
                 print(f"An error occurred while extracting links: {e}")
-            
+            #   if the object has data, store it
             if cool_little_thing.site != None or cool_little_thing.link != None:
                 result_objects.append(cool_little_thing)
-
+    
         all_results.extend(result_objects)
 
         time.sleep(2)  # Delay to prevent hitting Google's rate limits
@@ -128,12 +129,14 @@ def scrape_google(queries, num_urls = 9, num_pages = 1):
 def expand_results(search_result_objects):
     driver = get_chrome_driver()
     for search_result in search_result_objects:
+        #   accessing webpage
         driver.get(search_result.link)
-
+        time.sleep(5)
         try:
-            page_body = driver.find_element(By.CSS_SELECTOR, 'body')
-
-            search_result.assign(text = page_body.text)
+            #   getting capturing and storing text
+            p_selectors = driver.find_elements(By.XPATH, '//body//p | //body//ol | //body//ul')
+            text = '\n'.join([p.text for p in p_selectors])
+            search_result.assign(text = text)
         except Exception as e:
             print(f"An error occurred while extracting text: {e}")
         
