@@ -1,0 +1,4 @@
+query,site,link,title,contains_AMR,GPT_response
+machine learning,https://www.ibm.com › topics › machine-learning,https://www.ibm.com/topics/machine-learning,What Is Machine Learning (ML)?,False,
+machine learning,https://en.wikipedia.org › wiki › Machine_learning,https://en.wikipedia.org/wiki/Machine_learning,Machine learning,False,
+machine learning,https://www.ibm.com › topics › machine-learning,https://www.ibm.com/topics/machine-learning,What Is Machine Learning (ML)?,False,"ChatCompletionMessage(content='Machine learning (ML) uses data and algorithms to mimic human learning and improve accuracy. The learning system of a machine learning algorithm includes three main parts.', role='assistant', function_call=None, tool_calls=None)"

@@ -8,8 +8,11 @@ def check_new(data):
     pass
 
 def process_results(data):
-    for result in data:
+    for i,result in enumerate(data):
         del result.text
+        if result.GPT_response == '':
+            data.pop(i)
+            
 
 def write_to_csv(data):
     process_results(data)

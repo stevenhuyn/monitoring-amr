@@ -16,7 +16,6 @@ Scraping
     Implement number of pages 
     Method for scraping google VS specific pages that we want to keep track of
 
-
 Things to search
     Date                    The date the article was written
     Outbreak Date           The date the outbreak was seen to have started or a date mentioned that concerns the outbreak.
@@ -46,7 +45,7 @@ class search_result:
     def set_site_info(self,site,link,title):
         self.site, self.link, self.title = site, link, title
 
-    def set_site_text(self, text = None):
+    def set_site_text(self, text):
         self.text = text
 
     def get_GPT_response(self,response_text):
@@ -91,13 +90,14 @@ def scrape_google(queries, num_urls = 9, num_pages = 1):
         search_box.clear()
         search_box.send_keys(query)
         search_box.send_keys(Keys.RETURN)
-        time.sleep(SMALL_TIME_DELAY)
+        time.sleep(LARGE_TIME_DELAY)
 
         # Find all the search result elements
-        search_results = driver.find_elements(By.XPATH,"//body[@id='gsr']//*[contains(@class, 'MjjYud')]")
-        #   for image-focused pages
-        if len(search_results) < 3:
-            search_results = driver.find_elements(By.XPATH,"//body[@id='gsr']//*[contains(@class, 'TzHB6b cLjAic K7khPe')]")
+        search_results = driver.find_elements(By.XPATH,'//div[@class="MjjYud"]')
+        if len(search_results) == 0:
+            time.sleep(SMALL_TIME_DELAY)
+            search_results = driver.find_elements(By.XPATH, '//div[@class="TzHB6b cLjAic K7khPe"]')
+
         # Extract links from search results
         result_objects = []
         searchlimit = num_urls
@@ -106,7 +106,7 @@ def scrape_google(queries, num_urls = 9, num_pages = 1):
             if i >= searchlimit:
                 break
             #   checking the page isn't the google suggestion box
-            if "people also ask" in result.text.lower():
+            if "people also ask" in result.text.lower() or "local results" in result.text.lower():
                 searchlimit += 1
                 continue
 
@@ -118,14 +118,14 @@ def scrape_google(queries, num_urls = 9, num_pages = 1):
                 #   Getting metadata and the url
                 link = web_page_front.get_attribute('href')
                 title = web_page_front.find_element(By.XPATH,"./h3").text
-                site = web_page_front.find_element(By.XPATH, './/*[@class="qLRx3b tjvcx GvPZzd cHaqb"]').text
+                site = web_page_front.find_element(By.XPATH, './/div[@class = "byrV5b"]').text
                 #   Storing in result object
                 cool_little_thing.set_site_info(site, link, title)
 
             except Exception as e:
                 print(f"An error occurred while extracting links: {e}")
             #   if the object has data, store it
-            if cool_little_thing.site != None or cool_little_thing.link != None:
+            if cool_little_thing.site != '' or cool_little_thing.link != '':
                 result_objects.append(cool_little_thing)
     
         all_results.extend(result_objects)
@@ -139,10 +139,10 @@ def scrape_google(queries, num_urls = 9, num_pages = 1):
 def scrape_sites(search_result_objects):
     driver = get_chrome_driver()
     for search_result in search_result_objects:
-        #   accessing webpage
-        driver.get(search_result.link)
-        time.sleep(SMALL_TIME_DELAY)
         try:
+            #   accessing webpage
+            driver.get(search_result.link)
+            time.sleep(SMALL_TIME_DELAY)
             #   getting capturing and storing text
             p_selectors = driver.find_elements(By.XPATH, '//body//p')
             l_selectors = driver.find_elements(By.XPATH, '//body//ol | //body//ul')
