@@ -13,9 +13,7 @@ Search Object
 
 Scraping
     Filter items by date
-    Don't scrape everything - scrape only certain tags
-    Investiage reader mode
-    Implement number of pages / number of urls
+    Implement number of pages 
     Method for scraping google VS specific pages that we want to keep track of
 
 
@@ -31,36 +29,40 @@ Things to search
     Locations               A comma separated list of locations.
 
 '''
+SMALL_TIME_DELAY = 5
+LARGE_TIME_DELAY = SMALL_TIME_DELAY * 2
 
 class search_result:
     def __init__(self,query):
         self.query = query
-        self.site = None
-        self.link = None
-        self.title = None
-        self.text = None
+        self.site = ''
+        self.link = ''
+        self.title = ''
+        self.text = ''
 
-        self.contains_AMR = None
-        self.GPT_response = None
+        self.contains_AMR = False
+        self.GPT_response = ''
 
-    def assign(self,site = None, link = None, title = None, text = None):
-        if site != None:
-            self.site = site
-        if link != None:
-            self.link = link
-        if title != None:
-            self.title = title
-        if text != None:
-            self.text = text
+    def set_site_info(self,site,link,title):
+        self.site, self.link, self.title = site, link, title
 
-    def get_GPT_response(self,AMR_worthy,response_text):
-        self.contains_AMR = AMR_worthy
+    def set_site_text(self, text = None):
+        self.text = text
+
+    def get_GPT_response(self,response_text):
         self.GPT_response = response_text
+
+    def process_GPT_response(self):
+        self.outbreak_dates = ''
+        self.locations = ''
+        self.amr_type = ''
+        self.number_of_people = ''
 
     def display(self, display_length_max):
             # print("Values of the attributes:")
             for key, value in vars(self).items():
-                print(f"{key}: {value[:min(len(value),display_length_max)]}")
+                if type(value) == str:
+                    print(f"{key}: {value[:min(len(value),display_length_max)]}")
             print()
 
 def get_chrome_driver():
@@ -89,7 +91,7 @@ def scrape_google(queries, num_urls = 9, num_pages = 1):
         search_box.clear()
         search_box.send_keys(query)
         search_box.send_keys(Keys.RETURN)
-        time.sleep(2)
+        time.sleep(SMALL_TIME_DELAY)
 
         # Find all the search result elements
         search_results = driver.find_elements(By.XPATH,"//body[@id='gsr']//*[contains(@class, 'MjjYud')]")
@@ -107,16 +109,19 @@ def scrape_google(queries, num_urls = 9, num_pages = 1):
             if "people also ask" in result.text.lower():
                 searchlimit += 1
                 continue
+
             #   instantiating result object
             cool_little_thing = search_result(query)
+
             try:
-                web_page_front = result.find_element(By.CSS_SELECTOR,'a')
+                web_page_front = result.find_element(By.XPATH,'.//a')
                 #   Getting metadata and the url
                 link = web_page_front.get_attribute('href')
                 title = web_page_front.find_element(By.XPATH,"./h3").text
-                site = web_page_front.find_element(By.XPATH,"//*[contains(@class, 'qLRx3b tjvcx GvPZzd cHaqb')]").text
+                site = web_page_front.find_element(By.XPATH, './/*[@class="qLRx3b tjvcx GvPZzd cHaqb"]').text
                 #   Storing in result object
-                cool_little_thing.assign(site, link, title)
+                cool_little_thing.set_site_info(site, link, title)
+
             except Exception as e:
                 print(f"An error occurred while extracting links: {e}")
             #   if the object has data, store it
@@ -125,7 +130,7 @@ def scrape_google(queries, num_urls = 9, num_pages = 1):
     
         all_results.extend(result_objects)
 
-        time.sleep(2)  # Delay to prevent hitting Google's rate limits
+        time.sleep(SMALL_TIME_DELAY)  # Delay to prevent hitting Google's rate limits
 
     driver.quit()
 
@@ -136,16 +141,14 @@ def scrape_sites(search_result_objects):
     for search_result in search_result_objects:
         #   accessing webpage
         driver.get(search_result.link)
-        time.sleep(5)
+        time.sleep(SMALL_TIME_DELAY)
         try:
             #   getting capturing and storing text
             p_selectors = driver.find_elements(By.XPATH, '//body//p')
             l_selectors = driver.find_elements(By.XPATH, '//body//ol | //body//ul')
             text = '\n'.join([item.text for item in p_selectors + l_selectors ])
-            search_result.assign(text = text)
+            search_result.set_site_text(text)
         except Exception as e:
             print(f"An error occurred while extracting text: {e}")
-        
-        time.sleep(2) # Delay to prevent hitting Google's rate limits
     
     driver.quit()
