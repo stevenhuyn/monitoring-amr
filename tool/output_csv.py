@@ -1,17 +1,39 @@
 import csv
 import os
 
-def write_to_csv(data, filename):
-    # Check if the CSV file already exists
-    file_exists = os.path.isfile(filename)
+NEW_DATA = 'new_monitoring_amr.csv'
+OLD_DATA = 'monitoring_amr.csv'
 
-    with open(filename, 'a', newline='') as csvfile:
+def write_to_csv(data):
+    # Check if the CSV file already exists
+    file_exists = os.path.exists(OLD_DATA)
+
+    with open(OLD_DATA, 'a', newline='') as csvfile:
         fieldnames = data[0].keys() if data else []
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-        # Write header only if the file is newly created
-        if not file_exists:
+        # Write data to CSV
+        for row in data:
+            writer.writerow(row)
+
+    # If the old data file doesn't exist, create it and write the header
+    if not file_exists:
+        with open(OLD_DATA, 'w', newline='') as csvfile:
+            fieldnames = data[0].keys() if data else []
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
             writer.writeheader()
+
+            # Write data to CSV
+            for row in data:
+                writer.writerow(row)
+
+    # Always overwrite the new data file
+    with open(NEW_DATA, 'w', newline='') as csvfile:
+        fieldnames = data[0].keys() if data else []
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        writer.writeheader()
 
         # Write data to CSV
         for row in data:
@@ -20,15 +42,11 @@ def write_to_csv(data, filename):
 def main():
     # Sample data (replace this with your dictionary)
     data = [
-        {"Name": "John", "Age": 30, "City": "New York"},
-        {"Name": "Alice", "Age": 25, "City": "Los Angeles"},
+        {"Name": "Francis", "Age": 40, "City": "Chicago"}
     ]
 
-    # CSV filename
-    csv_filename = "output.csv"
-
     # Write data to CSV
-    write_to_csv(data, csv_filename)
+    write_to_csv(data)
 
 if __name__ == "__main__":
     main()

@@ -34,11 +34,14 @@ Things to search
 
 class search_result:
     def __init__(self,query):
-        self.query = None
+        self.query = query
         self.site = None
         self.link = None
         self.title = None
         self.text = None
+
+        self.contains_AMR = None
+        self.GPT_response = None
 
     def assign(self,site = None, link = None, title = None, text = None):
         if site != None:
@@ -49,6 +52,10 @@ class search_result:
             self.title = title
         if text != None:
             self.text = text
+
+    def get_GPT_response(self,AMR_worthy,response_text):
+        self.contains_AMR = AMR_worthy
+        self.GPT_response = response_text
 
     def display(self, display_length_max):
             # print("Values of the attributes:")
@@ -124,7 +131,7 @@ def scrape_google(queries, num_urls = 9, num_pages = 1):
 
     return all_results
 
-def expand_results(search_result_objects):
+def scrape_sites(search_result_objects):
     driver = get_chrome_driver()
     for search_result in search_result_objects:
         #   accessing webpage
@@ -142,16 +149,3 @@ def expand_results(search_result_objects):
         time.sleep(2) # Delay to prevent hitting Google's rate limits
     
     driver.quit()
-
-queries = ["machine learning"]
-number_of_pages_to_scrape = 1 #TODO, still need to implement
-number_of_urls_per_page = 3
-maximum_text_display_length = 500
-
-search_results = scrape_google(queries, num_urls= number_of_urls_per_page, 
-        num_pages = number_of_pages_to_scrape)  #   Gets websites and urls from specified pages of google
-expand_results(search_results)  #   Accesses links and gets text
-print("Search Results:")
-for i, result in enumerate(search_results):
-    print(f"Result {i+1}")
-    result.display(maximum_text_display_length)
