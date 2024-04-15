@@ -69,9 +69,6 @@ def get_chrome_driver():
 
     return driver
 
-def output_to_csv(scraped_data):
-    pass
-
 def scrape_google(queries, num_urls = 9, num_pages = 1):
     driver = get_chrome_driver()
 
