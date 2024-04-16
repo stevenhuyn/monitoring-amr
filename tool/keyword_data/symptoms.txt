@@ -1,0 +1,9 @@
+fever
+infection
+vomiting
+diarrhea
+fatigue
+abscess
+boil
+sick
+illness

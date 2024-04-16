@@ -1,0 +1,11 @@
+gram-negative
+cholera
+norovirus
+e. coli
+listeria
+methicillin-resistant staphylococcus aureus
+mrsa
+vancomycin-resistant enterococcus
+vre
+multi-drug-resistant mycobacterium tuberculosis
+mdr-tb

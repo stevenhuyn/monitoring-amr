@@ -5,28 +5,6 @@ from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 
-'''
-TODO
-Search Object
-    Improve assigning
-    Add more variables
-
-Scraping
-    Implement number of pages 
-    Method for scraping google VS specific pages that we want to keep track of
-
-Things to search
-    Date                    The date the article was written
-    Outbreak Date           The date the outbreak was seen to have started or a date mentioned that concerns the outbreak.
-    Human Scale             The number of people affected.
-    City Scale              The number of cities affected.
-    Region Scale            The number of regions affected.
-    Locations               A comma separated list of locations.
-    Anti-microbial Use      Were anti-microbials administered.
-    Case                    ?? Resistance?? 
-    Locations               A comma separated list of locations.
-
-'''
 TEXT_TO_AVOID = ['scholarly articles' , 'people also ask', 'local results']
 SMALL_TIME_DELAY = 5
 LARGE_TIME_DELAY = SMALL_TIME_DELAY * 2
@@ -52,6 +30,7 @@ class search_result:
         self.GPT_response = response_text
 
     def process_GPT_response(self):
+        #   process the text
         self.outbreak_dates = ''
         self.locations = ''
         self.amr_type = ''
@@ -77,24 +56,20 @@ def get_chrome_driver():
 
     return driver
 
-<<<<<<< Updated upstream
-def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pages = 1):
-=======
 def check_not_relevant(article_text):
     for text in TEXT_TO_AVOID:
         if text in article_text.lower():
             return True
     return False
 
-def scrape_google(queries, num_urls = 9, num_pages = 1):
->>>>>>> Stashed changes
+def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pages = 1):
     driver = get_chrome_driver()
 
     all_results = []
     for query in queries:
         print(f"Scraping search results for query: {query}")
 
-        if start_year and end_year:
+        if start_date and end_date:
             query += f" after:{start_date} before:{end_date}"
         driver.get('https://www.google.com')
 

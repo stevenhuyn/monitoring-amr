@@ -1,0 +1,45 @@
+Amikacin
+Amoxicillin-clavulanic acid
+Ampicillin
+Azithromycin
+Aztreonam
+Aztreonam-Avibactam
+Benzylpenicillin
+Cefepime
+Cefotaxime
+Cefoxitin
+Ceftaroline
+Ceftazidime
+Ceftazidime-Avibactam
+Ceftibuten
+Ceftolozane-tazobactam
+Chloramphenicol
+Ciprofloxacin
+Clarithromycin
+Clindamycin
+Colistin
+Doripenem
+Doxycycline
+Ertapenem
+Erythromycin
+Fosfomycin
+Fusidic acid
+Gentamicin
+Imipenem
+Levofloxacin
+Linezolid
+Meropenem
+Minocycline
+Moxifloxacin
+Netilmicin
+Oxacillin
+Piperacillin-tazobactam
+Rifampicin
+Tedizolid
+Telavancin
+Tetracycline
+Ticarcillin-clavulanic acid
+Tigecycline
+Tobramycin
+Trimethoprim-sulfamethoxazole
+Vancomycin
