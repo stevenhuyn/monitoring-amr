@@ -7,7 +7,7 @@ import output_csv as output
 
 queries = ["machine learning"] #TODO NEED TO WORK WITH IMAGE BASED PAGES
 number_of_pages_to_scrape = 1 #TODO, still need to implement
-number_of_urls_per_page = 1
+number_of_urls_per_page = 2
 maximum_text_display_length = 500
 
 chatgpt_behaviour = 'You are my assistant - you are polite and concise.'
@@ -23,7 +23,7 @@ scrape.scrape_sites(search_results)  #   Accesses links and gets text
 #TODO
 
 #       SENDING TO CHATGPT
-#api.generate_responses(search_results,chatGPT_command,chatgpt_behaviour)
+api.generate_responses(search_results,chatGPT_command,chatgpt_behaviour)
 
 #       OUTPUTTING TO CSV
 output.write_to_csv(search_results)

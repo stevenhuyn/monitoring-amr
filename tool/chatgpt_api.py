@@ -20,6 +20,7 @@ def generate_responses(data : list, command_text : str = '', behaviour_prompt : 
                 {"role": "user", "content": command_text + '\n' + input_text}
             ]
             )
-            search_object.get_GPT_response(completion.choices[0].message) #TODO
+            search_object.get_GPT_response(completion.choices[0].message.content) #TODO
         except Exception as e:
+            search_object.get_GPT_response('')
             print(f"Exception \n :{e}")

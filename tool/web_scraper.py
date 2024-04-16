@@ -27,6 +27,7 @@ Things to search
     Locations               A comma separated list of locations.
 
 '''
+TEXT_TO_AVOID = ['scholarly articles' , 'people also ask', 'local results']
 SMALL_TIME_DELAY = 5
 LARGE_TIME_DELAY = SMALL_TIME_DELAY * 2
 
@@ -76,7 +77,17 @@ def get_chrome_driver():
 
     return driver
 
+<<<<<<< Updated upstream
 def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pages = 1):
+=======
+def check_not_relevant(article_text):
+    for text in TEXT_TO_AVOID:
+        if text in article_text.lower():
+            return True
+    return False
+
+def scrape_google(queries, num_urls = 9, num_pages = 1):
+>>>>>>> Stashed changes
     driver = get_chrome_driver()
 
     all_results = []
@@ -108,7 +119,7 @@ def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pag
             if i >= searchlimit:
                 break
             #   checking the page isn't the google suggestion box
-            if "people also ask" in result.text.lower() or "local results" in result.text.lower():
+            if check_not_relevant(result.text.lower()):
                 searchlimit += 1
                 continue
 
