@@ -12,7 +12,6 @@ Search Object
     Add more variables
 
 Scraping
-    Filter items by date
     Implement number of pages 
     Method for scraping google VS specific pages that we want to keep track of
 
@@ -77,12 +76,15 @@ def get_chrome_driver():
 
     return driver
 
-def scrape_google(queries, num_urls = 9, num_pages = 1):
+def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pages = 1):
     driver = get_chrome_driver()
 
     all_results = []
     for query in queries:
         print(f"Scraping search results for query: {query}")
+
+        if start_year and end_year:
+            query += f" after:{start_date} before:{end_date}"
         driver.get('https://www.google.com')
 
         # Find the search box and input the query
