@@ -1,8 +1,8 @@
 import csv
 import os
 
-NEW_DATA = 'new_monitoring_amr.csv'
-OLD_DATA = 'monitoring_amr.csv'
+NEW_DATA = 'outputs/new_monitoring_amr.csv'
+OLD_DATA = 'outputs/monitoring_amr.csv'
 
 def check_new(data):
     pass
@@ -13,6 +13,8 @@ def process_results(data):
         # if result.GPT_response == '':
         #     data.pop(i)
             
+def process_prompt(data):
+    pass
 
 def write_to_csv(data):
     process_results(data)

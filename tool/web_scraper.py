@@ -4,6 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys 
 from webdriver_manager.chrome import ChromeDriverManager
 import time
+import random
+import os
 
 TEXT_TO_AVOID = ['scholarly articles' , 'people also ask', 'local results']
 SMALL_TIME_DELAY = 5
@@ -56,11 +58,54 @@ def get_chrome_driver():
 
     return driver
 
-def check_not_relevant(article_text):
+def check_not_relevant(article_text : str):
     for text in TEXT_TO_AVOID:
         if text in article_text.lower():
             return True
     return False
+
+def generate_queries(filenames : str, num_queries : int =10,
+    locations_filename : str = os.path.join(os.getcwd(), 'keyword_data', 'locations', 'locations.txt'), num_files_sampled : int = 3):
+    # Function to get a random line from a file
+    def get_random_line(filename):
+        with open(filename, 'r') as file:
+            # Read all lines from the file
+            lines = file.readlines()
+            # Choose a random line
+            return random.choice(lines).strip()  # Strip newline characters
+    
+    queries = []
+    for i in range(num_queries):
+        # Select 3 random filenames from the list
+        random_files = random.sample(filenames, min(num_files_sampled, len(filenames)))
+
+        query = []
+        for filename in random_files:
+            # Get a random line from the file
+            line = get_random_line(filename)
+            # Append the line to the queries list
+            query.append(line)
+
+        query.append(get_random_line(locations_filename))
+        query = ' '.join(query)
+        queries.append(query)
+    
+    # Join the lines with spaces
+    return queries
+
+def get_filenames_in_folder(folder_name : str = 'keyword_data'):
+    # Construct the full path to the folder within the current directory
+    folder_path = os.path.join(os.getcwd(), folder_name)
+    print(os.getcwd())
+    print(folder_path)
+    # Walk through the folder and collect filenames
+    for root, dirs, files in os.walk(folder_path):
+        print("Root:", root)
+        print("Directories:", dirs)
+        print("Files:", files)
+      
+    
+    return 0
 
 def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pages = 1):
     driver = get_chrome_driver()
