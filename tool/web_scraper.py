@@ -4,7 +4,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys 
 from webdriver_manager.chrome import ChromeDriverManager
 import time
-import random
 import os
 
 TEXT_TO_AVOID = ['scholarly articles' , 'people also ask', 'local results']
@@ -12,18 +11,16 @@ SMALL_TIME_DELAY = 5
 LARGE_TIME_DELAY = SMALL_TIME_DELAY * 2
 
 class search_result:
-    def __init__(self,query):
+    def __init__(self,query,website_dir,url,title,synopsis):
         self.query = query
-        self.site = ''
-        self.link = ''
-        self.title = ''
+        self.website_dir = website_dir
+        self.url = url
+        self.title = title
+        self.synopsis = synopsis
         self.text = ''
 
         self.contains_AMR = False
         self.GPT_response = ''
-
-    def set_site_info(self,site,link,title):
-        self.site, self.link, self.title = site, link, title
 
     def set_site_text(self, text):
         self.text = text
@@ -31,7 +28,7 @@ class search_result:
     def get_GPT_response(self,response_text):
         self.GPT_response = response_text
 
-    def process_GPT_response(self):
+    def process_GPT_response(self): #TODO
         #   process the text
         self.outbreak_dates = ''
         self.locations = ''
@@ -58,58 +55,29 @@ def get_chrome_driver():
 
     return driver
 
+def get_blacklist():
+    banned = []
+    with open(os.path.join('tool','website_data','blacklist.txt'),'r') as file:
+        banned = file.readlines()
+    for i in range(len(banned)):
+        banned[i] = banned[i].strip().lower()
+    return banned
+
+def check_banned(banned_list, url):
+    for i in banned_list:
+        if i in url:
+            return True
+    return False
+
 def check_not_relevant(article_text : str):
     for text in TEXT_TO_AVOID:
         if text in article_text.lower():
             return True
     return False
 
-def generate_queries(filenames : str, num_queries : int =10, #TODO
-    locations_filename : str = os.path.join(os.getcwd(), 'keyword_data', 'locations', 'locations.txt'), num_files_sampled : int = 3):
-    # Function to get a random line from a file
-    def get_random_line(filename):
-        with open(filename, 'r') as file:
-            # Read all lines from the file
-            lines = file.readlines()
-            # Choose a random line
-            return random.choice(lines).strip()  # Strip newline characters
-    
-    queries = []
-    for i in range(num_queries):
-        # Select 3 random filenames from the list
-        random_files = random.sample(filenames, min(num_files_sampled, len(filenames)))
-
-        query = []
-        for filename in random_files:
-            # Get a random line from the file
-            line = get_random_line(filename)
-            # Append the line to the queries list
-            query.append(line)
-
-        query.append(get_random_line(locations_filename))
-        query = ' '.join(query)
-        queries.append(query)
-    
-    # Join the lines with spaces
-    return queries
-
-def get_filenames_in_folder(folder_name : str = 'keywords'): #TODO
-    def convert_to_raw(text):
-        return r''+text
-    folder_name = convert_to_raw(folder_name)
-    # Construct the full path to the folder within the current directory
-    folder_path = os.path.join(os.getcwd(), folder_name)
-    print(os.getcwd() + r'\keywords')
-    print(os.path.exists(os.getcwd()+r'/keywords'))
-    # Walk through the folder and collect filenames
-    for root, dir, files in os.walk(folder_path):
-        print(f"Root: {root}")
-        print(f"Dir: {dir}")
-        print(f"Files: {files}")
-    return 0
-
 def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pages = 1):
     driver = get_chrome_driver()
+    banned = get_blacklist()
 
     all_results = []
     for query in queries:
@@ -144,23 +112,25 @@ def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pag
                 searchlimit += 1
                 continue
 
-            #   instantiating result object
-            cool_little_thing = search_result(query)
-
             try:
                 web_page_front = result.find_element(By.XPATH,'.//a')
                 #   Getting metadata and the url
-                link = web_page_front.get_attribute('href')
-                title = web_page_front.find_element(By.XPATH,"./h3").text
-                site = web_page_front.find_element(By.XPATH, './/div[@class = "byrV5b"]').text
-                #   Storing in result object
-                cool_little_thing.set_site_info(site, link, title)
+                url = web_page_front.get_attribute('href')
+                if check_banned(banned,url):
+                    searchlimit += 1
+                    continue
 
+                title = web_page_front.find_element(By.XPATH,"./h3").text
+                website_dir = web_page_front.find_element(By.XPATH, './/div[@class = "byrV5b"]').text
+                synopsis = result.find_element(By.XPATH, './/div[@data-snf="nke7rc"]').text
+                #   Storing in result object
+                cool_little_thing = search_result(query, website_dir, url, title, synopsis)
+                if type(cool_little_thing.website_dir) == str or type(cool_little_thing.url) == str:
+                    result_objects.append(cool_little_thing)
             except Exception as e:
                 print(f"An error occurred while extracting links: {e}")
             #   if the object has data, store it
-            if cool_little_thing.site != '' or cool_little_thing.link != '':
-                result_objects.append(cool_little_thing)
+
     
         all_results.extend(result_objects)
 
@@ -175,7 +145,7 @@ def scrape_sites(search_result_objects):
     for search_result in search_result_objects:
         try:
             #   accessing webpage
-            driver.get(search_result.link)
+            driver.get(search_result.url)
             time.sleep(SMALL_TIME_DELAY)
             #   getting capturing and storing text
             p_selectors = driver.find_elements(By.XPATH, '//body//p')

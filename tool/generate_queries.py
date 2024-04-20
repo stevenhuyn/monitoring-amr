@@ -38,6 +38,5 @@ def generate_queries(num_queries : int = 10, num_files_sampled : int = 3,
         queries.append(query)
     
     # Join the lines with spaces
+    print(queries)
     return queries
-
-print(generate_queries())
