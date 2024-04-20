@@ -16,7 +16,7 @@ Blacklist
 
 
 '''
-queries = ["machine learning"] #TODO NEED TO WORK WITH IMAGE BASED PAGES
+queries = ["machine"] #TODO NEED TO WORK WITH IMAGE BASED PAGES
 number_of_pages_to_scrape = 1 #TODO, still need to implement
 number_of_urls_per_page = 2
 maximum_text_display_length = 500
@@ -24,13 +24,13 @@ maximum_text_display_length = 500
 chatgpt_behaviour = 'You are my assistant - you are polite and concise.'
 chatGPT_command = 'Please summarize this article in no more than two sentences.'
 
-print(scrape.get_filenames_in_folder())
+# print(scrape.get_filenames_in_folder())
 
 # #       SCRAPING
-# search_results = scrape.scrape_google(queries, num_urls= number_of_urls_per_page, 
-#         num_pages = number_of_pages_to_scrape)  #   Gets websites and urls from specified pages of google
-# [result.display(maximum_text_display_length) for result in search_results]
-# scrape.scrape_sites(search_results)  #   Accesses links and gets text
+search_results = scrape.scrape_google(queries, num_urls= number_of_urls_per_page, 
+        num_pages = number_of_pages_to_scrape)  #   Gets websites and urls from specified pages of google
+[result.display(maximum_text_display_length) for result in search_results]
+scrape.scrape_sites(search_results)  #   Accesses links and gets text
 
 # #       SEEING IF NEW and or RELEVANT
 # #TODO

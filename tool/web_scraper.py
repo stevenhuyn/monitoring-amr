@@ -64,7 +64,7 @@ def check_not_relevant(article_text : str):
             return True
     return False
 
-def generate_queries(filenames : str, num_queries : int =10,
+def generate_queries(filenames : str, num_queries : int =10, #TODO
     locations_filename : str = os.path.join(os.getcwd(), 'keyword_data', 'locations', 'locations.txt'), num_files_sampled : int = 3):
     # Function to get a random line from a file
     def get_random_line(filename):
@@ -93,18 +93,19 @@ def generate_queries(filenames : str, num_queries : int =10,
     # Join the lines with spaces
     return queries
 
-def get_filenames_in_folder(folder_name : str = 'keyword_data'):
+def get_filenames_in_folder(folder_name : str = 'keywords'): #TODO
+    def convert_to_raw(text):
+        return r''+text
+    folder_name = convert_to_raw(folder_name)
     # Construct the full path to the folder within the current directory
     folder_path = os.path.join(os.getcwd(), folder_name)
-    print(os.getcwd())
-    print(folder_path)
+    print(os.getcwd() + r'\keywords')
+    print(os.path.exists(os.getcwd()+r'/keywords'))
     # Walk through the folder and collect filenames
-    for root, dirs, files in os.walk(folder_path):
-        print("Root:", root)
-        print("Directories:", dirs)
-        print("Files:", files)
-      
-    
+    for root, dir, files in os.walk(folder_path):
+        print(f"Root: {root}")
+        print(f"Dir: {dir}")
+        print(f"Files: {files}")
     return 0
 
 def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pages = 1):
