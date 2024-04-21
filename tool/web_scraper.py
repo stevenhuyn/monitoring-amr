@@ -19,21 +19,40 @@ class search_result:
         self.synopsis = synopsis
         self.text = ''
 
+        self.synopsis_response = ''
         self.contains_AMR = False
-        self.GPT_response = ''
+        self.text_response = ''
 
     def set_site_text(self, text):
         self.text = text
 
-    def get_GPT_response(self,response_text):
-        self.GPT_response = response_text
+    def get_synopsis_response(self, response_text):
+        self.synopsis_response = response_text
+        self.process_GPT_response('synopsis')
 
-    def process_GPT_response(self): #TODO
+    def get_GPT_response(self,response_text):
+        self.text_response = response_text
+        self.process_GPT_response('text')
+
+    def process_GPT_response(self, mode): #TODO
         #   process the text
-        self.outbreak_dates = ''
-        self.locations = ''
-        self.amr_type = ''
-        self.number_of_people = ''
+        if mode == 'synopsis':
+            self.contains_AMR = False if self.synopsis_response.lower().strip() != 'yes' else True
+        else:
+            text = self.text_response[:5].lower().strip()
+            if 'yes' in text:
+                self.contains_AMR = True
+                self.outbreak_dates = 'TODO'
+                self.locations = 'TODO'
+                self.amr_type = 'TODO'
+                self.number_of_people = 'TODO'
+
+            else:
+                self.contains_AMR = False
+                self.outbreak_dates = ''
+                self.locations = ''
+                self.amr_type = ''
+                self.number_of_people = ''
 
     def display(self, display_length_max):
             # print("Values of the attributes:")
@@ -125,6 +144,7 @@ def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pag
                 synopsis = result.find_element(By.XPATH, './/div[@data-snf="nke7rc"]').text
                 #   Storing in result object
                 cool_little_thing = search_result(query, website_dir, url, title, synopsis)
+
                 if type(cool_little_thing.website_dir) == str or type(cool_little_thing.url) == str:
                     result_objects.append(cool_little_thing)
             except Exception as e:
@@ -156,3 +176,41 @@ def scrape_sites(search_result_objects):
             print(f"An error occurred while extracting text: {e}")
     
     driver.quit()
+
+
+# class ConfigReader:
+#     def __init__(self, file_path):
+#         self.variables = {}
+#         self.read_config(file_path)
+
+#     def read_config(self, file_path):
+#         try:
+#             with open(file_path, "r") as file:
+#                 for line in file:
+#                     key = line.strip()
+#                     self.variables[key] = None
+#         except FileNotFoundError:
+#             print(f"Error: File '{file_path}' not found.")
+
+#     def get_variables(self):
+#         return self.variables
+
+
+# class ObjectWithVariables:
+#     def __init__(self, variable_list):
+#         self.create_variables(variable_list)
+
+#     def create_variables(self, variable_list):
+#         for variable in variable_list:
+#             setattr(self, variable, None)
+
+
+# # Example usage:
+# file_path = "tools/keywords/variables.txt"  # Adjust the file path accordingly
+# config_reader = ConfigReader(file_path)
+# variable_list = list(config_reader.get_variables().keys())
+
+# obj = ObjectWithVariables(variable_list)
+
+# # Example of accessing the dynamically created variables
+# print(obj.__dict__)

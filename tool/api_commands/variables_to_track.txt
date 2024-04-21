@@ -1,0 +1,4 @@
+locations
+date of article
+date of outbreak
+type of antimicrobial resistance

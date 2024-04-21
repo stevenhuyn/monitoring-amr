@@ -1,0 +1,6 @@
+The text following the colon comes from the element as seen on the google front page. 
+Does this text indicate that the element might contain text referring to the 
+documentation of an instance of antimicrobial resistance appearing in india?
+Please respond with only "Yes." if you are either certain that it does or uncertain. 
+If you are certain that it does not then please respond with onlhy "No." 
+The text is shown following this:

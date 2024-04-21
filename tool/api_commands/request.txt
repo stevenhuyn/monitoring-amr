@@ -1,0 +1,5 @@
+The text following the colon comes a web page.
+Does this text refer to an instance of antimicrobial resistance being documented in india?
+Please respond with only "Yes." if you are either certain that it does or uncertain. 
+If you are certain that it does not then please respond with only "No." 
+The text is shown following this:
