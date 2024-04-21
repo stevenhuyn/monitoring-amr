@@ -1,4 +1,4 @@
-locations
-date of article
-date of outbreak
+locations (comma seperated)
+date of article (dd-mm-yyyy)
+date of outbreak (dd-mm-yyyy)
 type of antimicrobial resistance

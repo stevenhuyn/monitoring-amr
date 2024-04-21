@@ -5,11 +5,17 @@ load_dotenv()
 
 def get_variables():
     variables = []
+    specs = []
     with open(os.path.join('tool','api_commands','variables_to_track.txt'),'r') as file:
         variables = file.readlines()
     for i in range(len(variables)):
-        variables[i] = variables[i].strip()
-    return variables
+        var = variables[i].strip()
+        spec_marker = variables[i].find('(')
+        spec = variables[i][spec_marker:] if spec_marker != -1 else ''
+        var = var[:spec_marker].strip() if spec_marker != -1 else var
+        variables[i] = var
+        specs.append(spec)
+    return (variables, specs)
 
 def get_synopsis_filter_command():
     synopsis_command = ''
@@ -28,14 +34,20 @@ def get_request_example():
     # return synopsis_command
     return None
 
-def get_request_command(variables): #TODO
+def get_request_command(variables, specs): #TODO
     synopsis_command = ''
-    with open(os.path.join('tool','api_commands','synopsis.txt'),'r') as file:
+    with open(os.path.join('tool','api_commands','request.txt'),'r') as file:
         lines = file.readlines()
     for line in lines:
         synopsis_command += line.replace('\n',' ')
-    return synopsis_command
+    print(synopsis_command)
+    temp_text = synopsis_command.split('<v>')
+    var_text = ''
+    for i in range(len(variables)):
+        var_text += f"{variables[i].capitalize()}: {specs[i]}"
 
+    request_command = f"{temp_text[0]}\n{var_text}\n\n{temp_text[1].strip()}"
+    return request_command
 
 def generate_responses(data : list, command_text : str, behaviour_prompt : str, mode : str, gpt_model : str = 'gpt-3.5-turbo'):
     client = OpenAI()

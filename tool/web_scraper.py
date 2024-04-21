@@ -39,7 +39,7 @@ class search_result:
         if mode == 'synopsis':
             self.contains_AMR = False if self.synopsis_response.lower().strip() != 'yes' else True
         else:
-            text = self.text_response[:5].lower().strip()
+            text = self.text_response[:min(5,len(text))].lower().strip()
             if 'yes' in text:
                 self.contains_AMR = True
                 self.outbreak_dates = 'TODO'
