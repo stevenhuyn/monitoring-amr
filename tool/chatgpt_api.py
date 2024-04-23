@@ -15,7 +15,8 @@ def get_variables():
         var = var[:spec_marker].strip() if spec_marker != -1 else var
         variables[i] = var
         specs.append(spec)
-    return (variables, specs)
+    variables_formatted = [variable.replace(' ', '_') for variable in variables]
+    return (variables, specs, variables_formatted)
 
 def get_synopsis_filter_command():
     synopsis_command = ''

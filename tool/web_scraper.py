@@ -28,38 +28,26 @@ class search_result:
 
     def get_synopsis_response(self, response_text):
         self.synopsis_response = response_text
-        self.process_GPT_response('synopsis')
+        self.process_response(response_text)
 
     def get_GPT_response(self,response_text):
         self.text_response = response_text
-        self.process_GPT_response('text')
+        self.process_response(response_text)
 
-    def process_GPT_response(self, mode): #TODO
-        #   process the text
-        if mode == 'synopsis':
-            self.contains_AMR = False if self.synopsis_response.lower().strip() != 'yes' else True
-        else:
-            text = self.text_response[:min(5,len(text))].lower().strip()
-            if 'yes' in text:
-                self.contains_AMR = True
-                self.outbreak_dates = 'TODO'
-                self.locations = 'TODO'
-                self.amr_type = 'TODO'
-                self.number_of_people = 'TODO'
+    def process_response(self, text):
+        if 'yes.' in text[:min(50,len(text))].lower():
+            self.contains_AMR = True
 
-            else:
-                self.contains_AMR = False
-                self.outbreak_dates = ''
-                self.locations = ''
-                self.amr_type = ''
-                self.number_of_people = ''
+
+    def set_variable(self,variable_name, variable_value):
+        setattr(self,variable_name,variable_value)
 
     def display(self, display_length_max):
             # print("Values of the attributes:")
             for key, value in vars(self).items():
                 if type(value) == str:
                     print(f"{key}: {value[:min(len(value),display_length_max)]}")
-            print()
+            print()            
 
 def get_chrome_driver():
     # Set ChromeDriver options
@@ -94,7 +82,7 @@ def check_not_relevant(article_text : str):
             return True
     return False
 
-def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pages = 1):
+def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pages = 1, max_time = 5):
     driver = get_chrome_driver()
     banned = get_blacklist()
 
@@ -104,6 +92,7 @@ def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pag
 
         if start_date and end_date:
             query += f" after:{start_date} before:{end_date}"
+        driver.set_page_load_timeout(max_time)
         driver.get('https://www.google.com')
 
         # Find the search box and input the query
@@ -160,8 +149,10 @@ def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pag
 
     return all_results
 
-def scrape_sites(search_result_objects):
+def scrape_sites(search_result_objects, max_time):
     driver = get_chrome_driver()
+    driver.set_page_load_timeout(max_time)
+
     for search_result in search_result_objects:
         try:
             #   accessing webpage
@@ -171,6 +162,8 @@ def scrape_sites(search_result_objects):
             p_selectors = driver.find_elements(By.XPATH, '//body//p')
             l_selectors = driver.find_elements(By.XPATH, '//body//ol | //body//ul')
             text = '\n'.join([item.text for item in p_selectors + l_selectors ])
+            if len(text) < 200:
+                text = '\n'.join(driver.find_elements(By.XPATH, '//body//div'))
             search_result.set_site_text(text)
         except Exception as e:
             print(f"An error occurred while extracting text: {e}")
