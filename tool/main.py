@@ -1,29 +1,24 @@
+import json as j
 import sys
 import os
+
 sys.path.append(os.getcwd())
 import web_scraper as scrape
 import chatgpt_api as api
 import output_csv as output
 import generate_queries as gen
 
-def process_data(process_variables = False, variables = None, formatted_variables = None):
-    global search_results
-    for i, result in enumerate(search_results):
-        if not(result.contains_AMR):
-            search_results.pop(i)
-    
-    if process_variables:    
-        for result in search_results:
-            processing_text = result.text_response.split('\n')
-            for i,variable in enumerate(variables):
-                for text in processing_text:
-                    if variable +':' in text.lower():
-                        result.set_variable(formatted_variables[i],text.split(':')[1].strip())
-                        continue
+
 '''
 TO DO
-Keyword engineering.
-One-shot learning.
+    Search prompt generation algorithm
+    Global Config Text File
+    Call this file main.py
+        Full on readme explaining stuff
+        Call main file
+        Webscraper behave
+        Global config file
+        Typecheck before csv processing - not corrupt main file
 '''
 #       USER VARIABLES
 # Queries
@@ -31,7 +26,6 @@ additional_queries = ['Over half of antibiotics prescribed in India cause antimi
 number_of_queries_generated = 0
 number_of_files_sampled = 3
 # Scraping
-number_of_pages_to_scrape = 1 #TODO, still need to implement
 number_of_urls_per_page = 2
 maximum_text_display_length = 500
 max_page_load_wait_time = 30
@@ -54,8 +48,7 @@ print(synopsis_command, end = '\n\n')
 print(request_command, end = '\n\n')
 
 #       SCRAPING
-search_results = scrape.scrape_google(queries, num_urls= number_of_urls_per_page, 
-        num_pages = number_of_pages_to_scrape, max_time = max_page_load_wait_time)  #   Gets websites and urls from specified pages of google
+search_results = scrape.scrape_google(queries, num_urls= number_of_urls_per_page, max_time = max_page_load_wait_time)  #   Gets websites and urls from specified pages of google
 print("\n\n FINISHED SCRAPING GOOGLE \n\n")
 [result.display(maximum_text_display_length) for result in search_results]
 scrape.scrape_sites(search_results, max_time = max_page_load_wait_time)  #   Accesses links and gets text
@@ -74,4 +67,5 @@ api.generate_responses(search_results, request_command, chat_gpt_filter_behaviou
 process_data(True, tracking_variables, formatted_variables)
 [result.display(maximum_text_display_length) for result in search_results]
 #       STORING
-output.write_to_csv(search_results)
+
+# output.write_to_csv(search_results)

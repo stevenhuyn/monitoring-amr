@@ -3,6 +3,7 @@ import os
 
 NEW_DATA = 'new_monitoring_amr.csv'
 OLD_DATA = 'monitoring_amr.csv'
+DELIMITER = ';'
 
 def write_to_csv(data):
     # Check if the CSV file already exists
@@ -14,7 +15,7 @@ def write_to_csv(data):
 
     # Write to the old data file
     with open(os.path.join('tool','outputs',OLD_DATA), 'a', newline='', encoding='utf-8',) as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=';;')
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=DELIMITER)
 
         # Write data to CSV
         for result in data:
@@ -23,7 +24,7 @@ def write_to_csv(data):
     # If the old data file doesn't exist, create it and write the header
     if not file_exists:
         with open(os.path.join('tool','outputs',OLD_DATA), 'w', newline='', encoding='utf-8') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames,delimiter=';;')
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames,delimiter=DELIMITER)
             writer.writeheader()
 
             # Write data to CSV
@@ -32,7 +33,7 @@ def write_to_csv(data):
 
     # Always overwrite the new data file
     with open(os.path.join('tool','outputs',NEW_DATA), 'w', newline='', encoding='utf-8') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames,delimiter=';;')
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames,delimiter=DELIMITER)
         writer.writeheader()
 
         # Write data to CSV

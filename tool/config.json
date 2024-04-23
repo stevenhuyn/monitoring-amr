@@ -1,0 +1,15 @@
+{
+    "additional search queries": [
+      "Over half of antibiotics prescribed in India cause antimicrobial resistance",
+      "AMR risk surged after pandemic: study",
+      "Antibiotic resistance is a growing threat — is climate change making it worse?",
+      "The paradox of antimicrobial resistance in India"
+    ],
+    "number of search queries generated": 0,
+    "number of search query generation files sampled": 3,
+    "maximum number of urls scraped per google page": 2,
+    "maximum page load time": 30,
+    "newly generated csv file name": "new_amr_monitoring_results.csv",
+    "continuous csv file name": "amr_monitoring_results.csv"
+  }
+  
