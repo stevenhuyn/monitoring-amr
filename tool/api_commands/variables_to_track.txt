@@ -1,5 +1,6 @@
 locations (comma seperated)
 date of article (dd-mm-yyyy)
-date of outbreak (dd-mm-yyyy)
-type of antimicrobial resistance
-number of people affected (number)
+start date of outbreak (dd-mm-yy)
+end date of outbreak (dd-mm-yy)
+type of antimicrobial resistance (fungal, viral, bacterial, etc.)
+number of people affected (numerical)

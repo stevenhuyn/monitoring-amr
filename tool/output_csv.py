@@ -5,11 +5,14 @@ NEW_DATA = 'new_monitoring_amr.csv'
 OLD_DATA = 'monitoring_amr.csv'
 DELIMITER = ';'
 
+def assign_constants(new,old,delimiter):
+    global NEW_DATA, OLD_DATA, DELIMITER
+    NEW_DATA, OLD_DATA, DELIMITER = new,old,delimiter
+
 def write_to_csv(data):
     # Check if the CSV file already exists
     file_exists = os.path.exists(OLD_DATA)
     
-
     # Get fieldnames from the class attributes of the search_result object
     fieldnames = data[0].__dict__.keys()
 

@@ -26,7 +26,7 @@ def get_synopsis_filter_command():
         synopsis_command += line.replace('\n',' ')
     return synopsis_command
 
-def get_request_example():
+def get_request_example(): #TODO
     # synopsis_command = ''
     # with open(os.path.join('tool','api_commands','synopsis.txt'),'r') as file:
     #     lines = file.readlines()
@@ -41,13 +41,13 @@ def get_request_command(variables, specs): #TODO
         lines = file.readlines()
     for line in lines:
         synopsis_command += line.replace('\n',' ')
-    print(synopsis_command)
+    
     temp_text = synopsis_command.split('<v>')
     var_text = ''
     for i in range(len(variables)):
         var_text += f"{variables[i].capitalize()}: {specs[i]}"
-
     request_command = f"{temp_text[0]}\n{var_text}\n\n{temp_text[1].strip()}"
+    
     return request_command
 
 def generate_responses(data : list, command_text : str, behaviour_prompt : str, mode : str, gpt_model : str = 'gpt-3.5-turbo'):

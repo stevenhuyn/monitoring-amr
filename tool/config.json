@@ -8,8 +8,20 @@
     "number of search queries generated": 0,
     "number of search query generation files sampled": 3,
     "maximum number of urls scraped per google page": 2,
+    "maximum text display length" : 500,
     "maximum page load time": 30,
     "newly generated csv file name": "new_amr_monitoring_results.csv",
-    "continuous csv file name": "amr_monitoring_results.csv"
-  }
-  
+    "continuous csv file name": "amr_monitoring_results.csv",
+    "csv delimiter" : ";",
+
+    "text for web scraper to avoid" : [
+      "scholarly articles" , 
+      "people also ask", 
+      "local results"
+    ],
+    "scraper small time delay" : 5,
+    "scraper large time delay" : 10,
+
+
+    "george" : 5
+}

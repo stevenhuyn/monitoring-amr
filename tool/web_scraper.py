@@ -10,6 +10,10 @@ TEXT_TO_AVOID = ['scholarly articles' , 'people also ask', 'local results']
 SMALL_TIME_DELAY = 5
 LARGE_TIME_DELAY = SMALL_TIME_DELAY * 2
 
+def assign_constants(avoided_text,small_delay, large_delay):
+    global TEXT_TO_AVOID, SMALL_TIME_DELAY, LARGE_TIME_DELAY
+    TEXT_TO_AVOID, SMALL_TIME_DELAY, LARGE_TIME_DELAY = avoided_text, small_delay, large_delay
+
 class search_result:
     def __init__(self,query,website_dir,url,title,synopsis):
         self.query = query
