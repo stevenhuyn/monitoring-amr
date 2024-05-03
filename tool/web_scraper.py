@@ -142,8 +142,6 @@ def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pag
                     result_objects.append(cool_little_thing)
             except Exception as e:
                 print(f"An error occurred while extracting links: {e}")
-            #   if the object has data, store it
-
     
         all_results.extend(result_objects)
 

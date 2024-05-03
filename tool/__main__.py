@@ -36,6 +36,7 @@ small_time_delay = config_data["scraper small time delay"]
 large_time_delay = config_data["scraper large time delay"]
 # API-GPT Behaviour
 chat_gpt_filter_behaviour = '' #TODO
+check_synopsis = config_data["check synopsis before passing full article"]
 # Output configuration
 new_csv_name = config_data["newly generated csv file name"]
 old_csv_name = config_data["continuous csv file name"]
@@ -54,19 +55,17 @@ scrape.assign_constants(text_to_avoid, small_time_delay, large_time_delay)
 search_results = scrape.scrape_google(queries, num_urls= number_of_urls_per_page, max_time = max_page_load_wait_time)  #   Gets websites and urls from specified pages of google
 print("\n\n FINISHED SCRAPING GOOGLE \n\n")
 [result.display(maximum_text_display_length) for result in search_results]
-# Scraping sites
+# Scraping sites & Filtering
 scrape.scrape_sites(search_results, max_time = max_page_load_wait_time)  #   Accesses links and gets text
 print("\n\n FINISHED SCRAPING SITES \n\n")
 [result.display(maximum_text_display_length) for result in search_results]
 
-#       FILTERING
-# Checking blacklist and novel urls
-
 #       API
 # Filtering
-api.generate_responses(search_results, synopsis_command, chat_gpt_filter_behaviour, 'filter')
-utils.process_data(search_results)
-[result.display(maximum_text_display_length) for result in search_results]
+if check_synopsis:
+    api.generate_responses(search_results, synopsis_command, chat_gpt_filter_behaviour, 'filter')
+    utils.process_data(search_results)
+    [result.display(maximum_text_display_length) for result in search_results]
 # Text Generation
 api.generate_responses(search_results, request_command, chat_gpt_filter_behaviour,'default')
 utils.process_data(search_results,True, tracking_variables, formatted_variables)
