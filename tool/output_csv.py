@@ -41,5 +41,8 @@ def write_to_csv(data):
 
         # Write data to CSV
         for row in data:
-            writer.writerow(row.__dict__)
+            try:
+                writer.writerow(row.__dict__)
+            except Exception as e:
+                print(f"The following exception occurred while trying to write the data to the CSV file {e}")
 

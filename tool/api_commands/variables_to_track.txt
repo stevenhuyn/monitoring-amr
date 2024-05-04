@@ -1,4 +1,4 @@
-locations (comma seperated)
+locations (comma seperated and be specific)
 date of article (dd-mm-yyyy)
 start date of outbreak (dd-mm-yy)
 end date of outbreak (dd-mm-yy)
