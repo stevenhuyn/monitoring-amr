@@ -1,12 +1,4 @@
 # AMR MONITORING CONFIGURATION TOOLBOX
-!!!!! for editing purposes, markdown does the following:
- - this creates bullet points
- # this creates a big heading
- ## more hashes create smaller headings
- *italics*
- **bold**\
- slashes before items remove some functionality, as ca be seen by this being on a new line but bold not being on a new line
-
 ## Overview
 Lorem ipsum dolor sit amet## 
 ## PyPI and pip
