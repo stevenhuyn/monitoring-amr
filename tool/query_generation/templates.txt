@@ -1,0 +1,2 @@
+<amr_pathogen> in <location> <source>
+<pathogen> with symptoms <symptom> and <symptom> in <location> or <location>

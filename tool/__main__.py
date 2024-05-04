@@ -49,7 +49,9 @@ synopsis_command = api.get_synopsis_filter_command()
 request_example = api.get_request_example() #TODO
 request_command = api.get_request_command(tracking_variables, specs)
 
-#       SCRAPING
+print(generated_queries)
+
+'''#       SCRAPING
 # Scraping google for sites
 scrape.assign_constants(text_to_avoid, small_time_delay, large_time_delay)
 search_results = scrape.scrape_google(queries, num_urls= number_of_urls_per_page, max_time = max_page_load_wait_time)  #   Gets websites and urls from specified pages of google
@@ -74,3 +76,4 @@ utils.process_data(search_results,True, tracking_variables, formatted_variables)
 #       STORING
 output.assign_constants(new_csv_name,old_csv_name,csv_delimiter)
 output.write_to_csv(search_results)
+'''

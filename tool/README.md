@@ -75,8 +75,3 @@ several different files have different keywords, this is a way of organising the
 This folder houses the outputs - one continuous csv file to keep track of all data and one csv file that gets overwritten each time the program is run for ease of separating the two.
 ### website_data 
 This folder contains two files, "blacklist.txt" and "urls.txt". "blacklist.txt" operates such that any piece of text on the page, if seen in the url of an article, will cause the url to not be investigated further. "urls.txt" exists to track the urls of webpages that have been visited and are not to be visited again to save on computational power and API credits.
-
-
-
-
-
