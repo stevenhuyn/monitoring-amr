@@ -1,8 +1,9 @@
 def process_data(search_results, process_variables = False, variables = None, formatted_variables = None):
-    for i, result in enumerate(search_results):
-        if not(result.contains_AMR):
-            search_results.pop(i)
-    
+    valid_results = []
+    for result in search_results:
+        if result.contains_AMR:
+            valid_results.append(result)
+
     if process_variables:    
         for result in search_results:
             processing_text = result.text_response.split('\n')
@@ -11,4 +12,6 @@ def process_data(search_results, process_variables = False, variables = None, fo
                     if variable +':' in text.lower():
                         result.set_variable(formatted_variables[i],text.split(':')[1].strip())
                         continue
+        return 0
+    return valid_results
 

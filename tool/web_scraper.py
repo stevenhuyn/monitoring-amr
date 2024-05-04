@@ -39,9 +39,10 @@ class search_result:
         self.process_response(response_text)
 
     def process_response(self, text):
-        if 'yes.' in text[:min(50,len(text))].lower():
+        if 'yes' in text[:min(50,len(text))].lower():
             self.contains_AMR = True
-
+        else:
+            self.contains_AMR = False
 
     def set_variable(self,variable_name, variable_value):
         setattr(self,variable_name,variable_value)
@@ -67,18 +68,22 @@ def get_chrome_driver():
     return driver
 
 def get_blacklist():
-    banned = []
     with open(os.path.join('tool','website_data','blacklist.txt'),'r') as file:
         banned = file.readlines()
     for i in range(len(banned)):
         banned[i] = banned[i].strip().lower()
     return banned
 
-def check_banned(banned_list, url):
-    for i in banned_list:
-        if i in url:
-            return True
-    return False
+def process_scraped_urls(mode : str = 'access', url : str = None):
+    if mode == 'access':
+        with open(os.path.join('tool','website_data','urls.txt'),'r') as file:
+            urls = file.readlines()
+        for i in range(len(urls)):
+            urls[i] = urls[i].strip().lower()
+        return urls
+    else:
+        with open(os.path.join('tool','website_data','urls.txt'),'a') as file:
+            file.write(url + '\n')
 
 def check_not_relevant(article_text : str):
     for text in TEXT_TO_AVOID:
@@ -86,9 +91,24 @@ def check_not_relevant(article_text : str):
             return True
     return False
 
-def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pages = 1, max_time = 5):
+def url_excluded(url, blacklisted_sites,seen_urls):
+    excluded = False
+    for site in blacklisted_sites:
+        if site.lower() in url.lower():
+            excluded = True
+            break
+    for seen in seen_urls:
+        if seen.lower() in url.lower():
+            excluded = True
+            break
+    return excluded
+
+ 
+
+def scrape_google(queries, start_date=None, end_date=None, max_time = 5, num_results = 5):
     driver = get_chrome_driver()
-    banned = get_blacklist()
+    banned_urls = get_blacklist()
+    seen_urls = process_scraped_urls()
 
     all_results = []
     for query in queries:
@@ -114,24 +134,21 @@ def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pag
 
         # Extract links from search results
         result_objects = []
-        searchlimit = num_urls
-        for i, result in enumerate(search_results):
-            #   stopping when the limit is reached
-            if i >= searchlimit:
-                break
+        accepted_results = 0
+        for result in search_results:
             #   checking the page isn't the google suggestion box
             if check_not_relevant(result.text.lower()):
-                searchlimit += 1
                 continue
+
+            if accepted_results >= num_results:
+                break
 
             try:
                 web_page_front = result.find_element(By.XPATH,'.//a')
                 #   Getting metadata and the url
                 url = web_page_front.get_attribute('href')
-                if check_banned(banned,url):
-                    searchlimit += 1
+                if url_excluded(url,banned_urls,seen_urls):
                     continue
-
                 title = web_page_front.find_element(By.XPATH,"./h3").text
                 website_dir = web_page_front.find_element(By.XPATH, './/div[@class = "byrV5b"]').text
                 synopsis = result.find_element(By.XPATH, './/div[@data-snf="nke7rc"]').text
@@ -139,10 +156,12 @@ def scrape_google(queries, start_date=None, end_date=None, num_urls = 9, num_pag
                 cool_little_thing = search_result(query, website_dir, url, title, synopsis)
 
                 if type(cool_little_thing.website_dir) == str or type(cool_little_thing.url) == str:
+                    process_scraped_urls('add',url)
                     result_objects.append(cool_little_thing)
+                    accepted_results += 1
             except Exception as e:
                 print(f"An error occurred while extracting links: {e}")
-    
+
         all_results.extend(result_objects)
 
         time.sleep(SMALL_TIME_DELAY)  # Delay to prevent hitting Google's rate limits
@@ -169,43 +188,5 @@ def scrape_sites(search_result_objects, max_time):
             search_result.set_site_text(text)
         except Exception as e:
             print(f"An error occurred while extracting text: {e}")
-    
+
     driver.quit()
-
-
-# class ConfigReader:
-#     def __init__(self, file_path):
-#         self.variables = {}
-#         self.read_config(file_path)
-
-#     def read_config(self, file_path):
-#         try:
-#             with open(file_path, "r") as file:
-#                 for line in file:
-#                     key = line.strip()
-#                     self.variables[key] = None
-#         except FileNotFoundError:
-#             print(f"Error: File '{file_path}' not found.")
-
-#     def get_variables(self):
-#         return self.variables
-
-
-# class ObjectWithVariables:
-#     def __init__(self, variable_list):
-#         self.create_variables(variable_list)
-
-#     def create_variables(self, variable_list):
-#         for variable in variable_list:
-#             setattr(self, variable, None)
-
-
-# # Example usage:
-# file_path = "tools/keywords/variables.txt"  # Adjust the file path accordingly
-# config_reader = ConfigReader(file_path)
-# variable_list = list(config_reader.get_variables().keys())
-
-# obj = ObjectWithVariables(variable_list)
-
-# # Example of accessing the dynamically created variables
-# print(obj.__dict__)
