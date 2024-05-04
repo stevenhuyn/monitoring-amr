@@ -23,7 +23,7 @@ def get_random_line(file_path):
             # Choose a random line
             return random.choice(lines).strip()  # Strip newline characters
 
-def generate_queries(num_queries : int = 1, working_dir : str = "tool", sub_dir : str = "query_generation"):
+def generate_queries(num_queries : int = 2, working_dir : str = "tool", sub_dir : str = "query_generation"):
     paths = get_file_paths(working_dir, sub_dir)
     queries = []
     with open(paths[1]) as template_file:

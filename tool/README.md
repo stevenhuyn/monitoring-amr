@@ -63,15 +63,23 @@ This text file contains the variables ChatGPT is prompted to extract from the we
 
 You can modify the entire file. It is recommended that the variables being extracted and their associated terms in brackets remain simple to discourage strange responses from ChatGPT. **If you wish to change this after having run the program, it is recommended that you move the previously produced csv files to another folder so as to not produce errors and lose data due to the presence of new headings.**
 
-### keywords
-_coming soon to a script near you (when implemented / important)_
-TL;DR for editing purposes:
-several different files have different keywords, this is a way of organising them for the purpose of keyword generation, to be properly implemented later
-### locations
-_coming soon to a script near you (when implemented / important)_
-TL;DR for editing purposes:
-several different files have different keywords, this is a way of organising them for the purpose of keyword generation, to be properly implemented later. These keywords are considered crucial
+### query_generation
+#### _keywords.txt
+The title of this section refers to any file with the suffix "_keywords.txt". These files are intended to have variables names pertaining to the names of the files.
+
+You can add or remove files with this naming convention so long as the the variables present in the file "templates.txt" follow the convention seen below:
+- filename    :   variable in the sentence of templates
+- whatever_the_file_is_named_keywords.txt : <whatever_the_file_is_named>
+
+#### templates.txt
+This file contains themplate search queries intended to be filled with variables designated as keywords. The convention described through bullet points above applies to this file as well.
+
+You can add or remove lines in this file as long as they abide by the convention.
 ### outputs
 This folder houses the outputs - one continuous csv file to keep track of all data and one csv file that gets overwritten each time the program is run for ease of separating the two.
+
+These files, except for their headings, can be altered.
 ### website_data 
 This folder contains two files, "blacklist.txt" and "urls.txt". "blacklist.txt" operates such that any piece of text on the page, if seen in the url of an article, will cause the url to not be investigated further. "urls.txt" exists to track the urls of webpages that have been visited and are not to be visited again to save on computational power and API credits.
+
+Both files can be altered.
