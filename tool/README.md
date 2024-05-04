@@ -62,6 +62,7 @@ Lines 1 - 3 can be modified. In "config.json", the variable "check synopsis befo
 This text file contains the variables ChatGPT is prompted to extract from the websites as well as pieces of text that provide either formatting information or additional context, in brackets.
 
 You can modify the entire file. It is recommended that the variables being extracted and their associated terms in brackets remain simple to discourage strange responses from ChatGPT. **If you wish to change this after having run the program, it is recommended that you move the previously produced csv files to another folder so as to not produce errors and lose data due to the presence of new headings.**
+
 ### keywords
 _coming soon to a script near you (when implemented / important)_
 TL;DR for editing purposes:
@@ -71,10 +72,9 @@ _coming soon to a script near you (when implemented / important)_
 TL;DR for editing purposes:
 several different files have different keywords, this is a way of organising them for the purpose of keyword generation, to be properly implemented later. These keywords are considered crucial
 ### outputs
-Lorem ipsum dolor sit amet## 
-
+This folder houses the outputs - one continuous csv file to keep track of all data and one csv file that gets overwritten each time the program is run for ease of separating the two.
 ### website_data 
-Lorem ipsum dolor sit amet## 
+This folder contains two files, "blacklist.txt" and "urls.txt". "blacklist.txt" operates such that any piece of text on the page, if seen in the url of an article, will cause the url to not be investigated further. "urls.txt" exists to track the urls of webpages that have been visited and are not to be visited again to save on computational power and API credits.
 
 
 
