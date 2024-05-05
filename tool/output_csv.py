@@ -10,8 +10,10 @@ def assign_constants(new,old,delimiter):
     NEW_DATA, OLD_DATA, DELIMITER = new,old,delimiter
 
 def write_to_csv(data):
+    if not len(data) > 0:
+        return 0
     # Check if the CSV file already exists
-    file_exists = os.path.exists(OLD_DATA)
+    file_exists = os.path.exists(os.path.join('tool','outputs',OLD_DATA))
     
     # Get fieldnames from the class attributes of the search_result object
     fieldnames = data[0].__dict__.keys()
@@ -21,9 +23,11 @@ def write_to_csv(data):
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=DELIMITER)
 
         # Write data to CSV
-        for result in data:
-            writer.writerow(result.__dict__)
-
+        for row in data:
+            try:
+                writer.writerow(row.__dict__)
+            except Exception as e:
+                print(f"The following exception occurred while trying to write the data to the CSV file {e}")
     # If the old data file doesn't exist, create it and write the header
     if not file_exists:
         with open(os.path.join('tool','outputs',OLD_DATA), 'w', newline='', encoding='utf-8') as csvfile:
@@ -32,8 +36,10 @@ def write_to_csv(data):
 
             # Write data to CSV
             for row in data:
-                writer.writerow(row.__dict__)
-
+                try:
+                    writer.writerow(row.__dict__)
+                except Exception as e:
+                    print(f"The following exception occurred while trying to write the data to the CSV file {e}")
     # Always overwrite the new data file
     with open(os.path.join('tool','outputs',NEW_DATA), 'w', newline='', encoding='utf-8') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames,delimiter=DELIMITER)

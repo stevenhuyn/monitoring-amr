@@ -5,13 +5,12 @@ def process_data(search_results, process_variables = False, variables = None, fo
             valid_results.append(result)
 
     if process_variables:    
-        for result in search_results:
+        for result in valid_results:
             processing_text = result.text_response.split('\n')
             for i,variable in enumerate(variables):
                 for text in processing_text:
                     if variable +':' in text.lower():
                         result.set_variable(formatted_variables[i],text.split(':')[1].strip())
                         continue
-        return 0
     return valid_results
 

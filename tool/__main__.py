@@ -7,12 +7,10 @@ import chatgpt_api as api
 import output_csv as output
 import generate_queries as gen
 import utils
-
 '''
 TO DO
     Typecheck before csv processing - not corrupt main file
 '''
-
 #       IMPORTING, GENERATING & ASSIGNING VARIABLES
 # Loading config file
 with open(os.path.join("tool","config.json"),"r") as file:
@@ -42,11 +40,11 @@ synopsis_command = api.get_synopsis_filter_command()
 request_example = api.get_request_example() #TODO
 request_command = api.get_request_command(tracking_variables, specs)
 
-# print(queries, end = '\n\n\n')
-# print(synopsis_command, end = '\n\n\n')
-# print(request_command, end = '\n\n\n')
-# print(queries, end = '\n\n\n')
-# print(number_of_urls_per_page, end = '\n\n\n')
+print(queries, end = '\n\n\n')
+print(synopsis_command, end = '\n\n\n')
+print(formatted_variables, end = '\n\n\n')
+print(request_command, end = '\n\n\n')
+print(queries, end = '\n\n\n')
 
 #       SCRAPING
 # Scraping google for sites and filtering
@@ -67,17 +65,16 @@ if check_synopsis:
     [result.display(maximum_text_display_length) for result in search_results]
 # Text Generation
 api.generate_responses(search_results, request_command, chat_gpt_filter_behaviour,'default')
-utils.process_data(search_results, True, tracking_variables, formatted_variables)
-[result.display(maximum_text_display_length) for result in search_results]
-print("\n\n FINISHED API RESPONSE \n\n")
-
-#       STORING
+search_results = utils.process_data(search_results, True, tracking_variables, formatted_variables)
 for result in search_results:
     del result.text
     del result.synopsis
     del result.synopsis_response
     del result.text_response
+[result.display(maximum_text_display_length) for result in search_results]
+print("\n\n FINISHED API RESPONSE \n\n")
 
+#       STORING
 output.assign_constants(new_csv_name,old_csv_name,csv_delimiter)
 output.write_to_csv(search_results)
 print("\n\n FINISHED OUTPUTTING \n\n")
