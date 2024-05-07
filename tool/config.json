@@ -1,7 +1,7 @@
 {
     "additional search queries": [
     ],
-    "number of search queries generated": 0,
+    "number of search queries generated": 1,
     "maximum number of urls scraped per google page": 2,
     "maximum text display length" : 500,
     "maximum page load time": 30,
@@ -16,6 +16,7 @@
     ],
     "scraper small time delay" : 5,
     "scraper large time delay" : 10,
+    "scrape google news instead of front page of google" : true,
 
     "check synopsis before passing full article" : false,
 

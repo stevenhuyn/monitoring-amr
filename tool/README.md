@@ -1,6 +1,6 @@
 # AMR MONITORING CONFIGURATION TOOLBOX
 ## Overview
-Lorem ipsum dolor sit amet## 
+This program is intended to function as a webscraper with the purpose of trackinng antimicrobial resistance related data in India, using Google and ChatGPT. With this being said, the configurable nature of the text files and json files allows this program to be used in several other contexts.
 ## PyPI and pip
 This program is configured for Python on Windows. Below are the modules it makes use of and, with them, the pip commands required to install them.
 - python-dotenv, pip install python-dotenv

@@ -39,6 +39,7 @@ tracking_variables, specs, formatted_variables = api.get_variables()
 synopsis_command = api.get_synopsis_filter_command()
 request_example = api.get_request_example() #TODO
 request_command = api.get_request_command(tracking_variables, specs)
+scrape_news = config_data["check synopsis before passing full article"]
 
 print(queries, end = '\n\n\n')
 print(synopsis_command, end = '\n\n\n')
@@ -49,7 +50,7 @@ print(queries, end = '\n\n\n')
 #       SCRAPING
 # Scraping google for sites and filtering
 scrape.assign_constants(text_to_avoid, small_time_delay, large_time_delay)
-search_results = scrape.scrape_google(queries, max_time = max_page_load_wait_time, num_results=number_of_results)  #   Gets websites and urls from specified pages of google
+search_results = scrape.scrape_google(queries, max_time = max_page_load_wait_time, num_results=number_of_results, news=scrape_news)  #   Gets websites and urls from specified pages of google
 [result.display(maximum_text_display_length) for result in search_results]
 print("\n\n FINISHED SCRAPING GOOGLE \n\n")
 # Scraping sites
@@ -57,6 +58,7 @@ scrape.scrape_sites(search_results, max_time = max_page_load_wait_time)  #   Acc
 [result.display(maximum_text_display_length) for result in search_results]
 print("\n\n FINISHED SCRAPING SITES \n\n")
 
+"""
 #       API
 # Filtering
 if check_synopsis:
@@ -78,3 +80,4 @@ print("\n\n FINISHED API RESPONSE \n\n")
 output.assign_constants(new_csv_name,old_csv_name,csv_delimiter)
 output.write_to_csv(search_results)
 print("\n\n FINISHED OUTPUTTING \n\n")
+"""
