@@ -2,7 +2,7 @@
     "additional search queries": [
     ],
     "number of search queries generated": 1,
-    "maximum number of urls scraped per google page": 1,
+    "maximum number of urls scraped per google page": 6,
     "maximum text display length" : 500,
     "maximum page load time": 30,
     "newly generated csv file name": "new_amr_monitoring_results.csv",
@@ -29,11 +29,10 @@
       "Tamil": "https://news.google.com/home?hl=ta&gl=IN&ceid=IN:ta" ,
       "Telugu": "https://news.google.com/home?hl=te&gl=IN&ceid=IN:te" 
     },
-    
+
     "chosen browser language" : "English",
 
-
     "check synopsis before passing full article" : false,
-    "use oneshot learning through the example request" : true
+    "use oneshot learning through the example request" : false
 }
 

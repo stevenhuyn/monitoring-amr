@@ -41,6 +41,10 @@ synopsis_command = api.get_synopsis_filter_command()
 request_example = api.get_oneshot()
 request_command = api.get_request_command(tracking_variables, specs)
 
+# Misc
+if scrape_news:
+    check_synopsis = False
+
 #       SCRAPING
 # Scraping google for sites and filtering
 scrape.assign_constants(text_to_avoid, small_time_delay, large_time_delay)
@@ -53,7 +57,7 @@ scrape.scrape_sites(search_results, max_time = max_page_load_wait_time)  #   Acc
 print("\n\n FINISHED SCRAPING SITES \n\n")
 
 #       API
-# Filtering
+# Filtering 
 if check_synopsis:
     api.generate_responses(search_results, synopsis_command, chat_gpt_filter_behaviour, 'filter',oneshot = oneshot,oneshot_message = request_example)
     search_results = utils.process_data(search_results)
@@ -61,12 +65,12 @@ if check_synopsis:
 # Text Generation
 api.generate_responses(search_results, request_command, chat_gpt_filter_behaviour,'default',oneshot = oneshot,oneshot_message = request_example)
 search_results = utils.process_data(search_results, True, tracking_variables, formatted_variables)
+[result.display(maximum_text_display_length) for result in search_results]
 for result in search_results:
     del result.text
     del result.synopsis
     del result.synopsis_response
     del result.text_response
-[result.display(maximum_text_display_length) for result in search_results]
 print("\n\n FINISHED API RESPONSE \n\n")
 
 #       STORING

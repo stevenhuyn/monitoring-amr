@@ -64,14 +64,14 @@ def get_request_command(variables, specs): #TODO
 def generate_responses(data : list, command_text : str, behaviour_prompt : str, mode : str, gpt_model : str = 'gpt-3.5-turbo', oneshot : bool = False, oneshot_message = None):
     client = OpenAI()
     if oneshot:
-        message = [
+        original_message = [
             {"role": "system", "content": behaviour_prompt},
             {"role": "user", "content": oneshot_message[0]},
             {"role": "assistant", "content": oneshot_message[1]},
             {"role": "user", "content": command_text + '\n'}
         ]
     else:
-        message = [
+        original_message = [
             {"role": "system", "content": behaviour_prompt},
             {"role": "user", "content": command_text + '\n'}
         ]
@@ -79,6 +79,7 @@ def generate_responses(data : list, command_text : str, behaviour_prompt : str, 
     if mode == 'filter':
         for search_object in data:
             input_text = search_object.synopsis
+            message = original_message.copy()
             message[-1]["content"] += input_text
             try:
                 completion = client.chat.completions.create(
@@ -92,6 +93,7 @@ def generate_responses(data : list, command_text : str, behaviour_prompt : str, 
     else:
         for search_object in data:
             input_text = search_object.text
+            message = original_message.copy()
             message[-1]["content"] += input_text
             try:
                 completion = client.chat.completions.create(
