@@ -39,9 +39,10 @@ Do not change the name of the variable but feel free to change the value or modi
 ## Configuring folders
 ### api_commands 
 #### example_requests.txt
-_coming soon to a script near you (when implemented / important)_
-TL;DR for editing purposes:
-This is meant to be an example request for one shot learning, basically an example input followed by what would be an ideal output from chatgpt.
+This file allows for the use of one-shot learning with the "assitant" feature provided in the features of ChatGPT's API.
+The text following the line containing "\<user>" until the line containing "\<assistant>" is provided as the user's example prompt. The same is done for the text following the line containing "\<assistant>" and this is provided as the desired example response.
+
+Do not modify the lines containing the keywords mentioned above but feel free to change everything else.
 #### request.txt
 This text file contains the text used as the main prompt given to ChatGPT. The scripts function by checking the initial response for a "Yes." or "No." and then proceeding to extract the relevant data from the message if it exists. The relevant metrics aiming to be extracted from the article are prompted in place of the "\<v>" and they are extracted from the file in the same folder "variables_to_extract.txt".
 

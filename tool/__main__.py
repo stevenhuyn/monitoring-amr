@@ -7,13 +7,7 @@ import chatgpt_api as api
 import output_csv as output
 import generate_queries as gen
 import utils
-'''
-TO DO
-    Get selenium to click go away cookie
-    One shot learning, example
-    News search VS just front of google  - look at search bar configuration
-    example request
-'''
+
 #       IMPORTING, GENERATING & ASSIGNING VARIABLES
 # Loading config file
 with open(os.path.join("tool","config.json"),"r") as file:
