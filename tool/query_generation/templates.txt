@@ -1,1 +1,1 @@
-<amr_pathogen> in <location> with <symptom>
+<amr_pathogen> <location>

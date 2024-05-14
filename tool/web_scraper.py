@@ -105,7 +105,7 @@ def url_excluded(url, blacklisted_sites,seen_urls):
             break
     return excluded
 
-def scrape_google(queries, start_date=None, end_date=None, max_time = 5, num_results = 5, news = True):
+def scrape_google(queries, start_date=None, end_date=None, max_time = 5, num_results = 5, news = False,news_browser = None):
     driver = get_chrome_driver()
     banned_urls = get_blacklist()
     seen_urls = process_scraped_urls()
@@ -168,20 +168,15 @@ def scrape_google(queries, start_date=None, end_date=None, max_time = 5, num_res
 
             time.sleep(SMALL_TIME_DELAY)  # Delay to prevent hitting Google's rate limits
         else:
-            driver.get('https://www.google.com/news')
-
-            # Find the search box and input the query
-            search_box = driver.find_element(By.CSS_SELECTOR,'input')
-            search_box.clear()
-            search_box.send_keys(query)
-            search_box.send_keys(Keys.RETURN)
+            browser_query = query.replace(' ','%20')
+            search_url = news_browser.replace('home?',f'search?q={browser_query}&')[:-3] +"%3" + news_browser[-2:]
+            driver.get(search_url)
             time.sleep(LARGE_TIME_DELAY)
 
             # Find all the search result elements
-            search_results = driver.find_elements(By.XPATH,'//c-wiz[@jsrenderer="ARwRbe"]')
+            search_results = driver.find_elements(By.XPATH,'//div[@class="m5k28"]')
             if len(search_results) == 0:
                 time.sleep(SMALL_TIME_DELAY)
-                search_results = driver.find_elements(By.XPATH,'//c-wiz[@jsrenderer="ARwRbe"]')
 
             # Extract links from search results
             result_objects = []
@@ -193,16 +188,12 @@ def scrape_google(queries, start_date=None, end_date=None, max_time = 5, num_res
                 if accepted_results >= num_results:
                     break
                 try:
-                    title = result.find_element(By.XPATH,'.//a').text
-                    #   Getting metadata and the url
-                    url = web_page_front.get_attribute('href')
-                    if url_excluded(url,banned_urls,seen_urls):
-                        continue
-                    title = web_page_front.find_element(By.XPATH,"./h3").text
-                    website_dir = web_page_front.find_element(By.XPATH, './/div[@class = "byrV5b"]').text
-                    synopsis = result.find_element(By.XPATH, './/div[@data-snf="nke7rc"]').text
-                    #   Storing in result object
-                    cool_little_thing = search_result(query, website_dir, url, title, synopsis)
+                    web_page_front = result.find_element(By.XPATH, './/div[@class="B6pJDd"]')
+                    title = web_page_front.text
+                    print(title)
+                    url = web_page_front.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
+                    print(url)
+                    cool_little_thing = search_result(query,'',url,title,'')
 
                     if type(cool_little_thing.website_dir) == str or type(cool_little_thing.url) == str:
                         process_scraped_urls('add',url)
@@ -231,44 +222,10 @@ def scrape_sites(search_result_objects, max_time):
             p_selectors = driver.find_elements(By.XPATH, '//body//p')
             l_selectors = driver.find_elements(By.XPATH, '//body//ol | //body//ul')
             text = '\n'.join([item.text for item in p_selectors + l_selectors ])
-            if len(text) < 200:
-                text = '\n'.join(driver.find_elements(By.XPATH, '//body//div'))
+            if len(text) < 400:
+                text = '\n'.join([div.text for div in driver.find_elements(By.XPATH, '//body//div')])
             search_result.set_site_text(text)
         except Exception as e:
             print(f"An error occurred while extracting text: {e}")
 
     driver.quit()
-
-
-
-'''import random
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
-
-BUSINESS = 'CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtVnVHZ0pWVXlnQVAB?hl=enUS&gl=US&ceid=US%3Aen'
-WORLD = 'CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen'
-
-categories = [WORLD, BUSINESS]
-random_category = random.choice(categories)
-
-# Navigate to Google News
-driver = webdriver.Chrome()
-driver.maximize_window()
-driver.get(f"https://news.google.com/topics/{random_category}")
-
-wait = WebDriverWait(driver, 10)
-a = wait.until(EC.visibility_of_any_elements_located((By.CSS_SELECTOR, "article > div > a")))
-print(f"Title: {a[0].get_attribute('aria-label')}")
-original_window = driver.current_window_handle
-a[0].click()
-wait.until(EC.number_of_windows_to_be(2))
-for window_handle in driver.window_handles:
-        if window_handle != original_window:
-            driver.switch_to.window(window_handle)
-            break
-
-wait.until(EC.none_of(EC.url_contains("news.google.com")))
-
-print(driver.current_url)'''

@@ -60,12 +60,7 @@ def get_request_command(variables, specs): #TODO
     request_command = f"{temp_text[0]}\n{var_text}\n\n{temp_text[1].strip()}"
     
     return request_command
-'''messages=[
-    {"role": "system", "content": "You are a helpful assistant."},
-    {"role": "user", "content": "Who won the world series in 2020?"},
-    {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
-    {"role": "user", "content": "Where was it played?"}
-  ]'''
+
 def generate_responses(data : list, command_text : str, behaviour_prompt : str, mode : str, gpt_model : str = 'gpt-3.5-turbo', oneshot : bool = False, oneshot_message = None):
     client = OpenAI()
     if oneshot:
