@@ -69,20 +69,6 @@ def get_chrome_driver():
 
     return driver
 
-# def get_chrome_driver():
-#     # Set ChromeDriver options
-#     options = webdriver.ChromeOptions()
-#     options.add_argument("--disable-notifications")
-#     # Add any additional options as needed
-
-#     # Create ChromeDriver service
-#     service = Service(ChromeDriverManager().install())
-
-#     # Initialize Chrome WebDriver
-#     driver = webdriver.Chrome(service=service, options=options)
-
-#     return driver
-
 def get_blacklist():
     with open(os.path.join('tool','website_data','blacklist.txt'),'r') as file:
         banned = file.readlines()
@@ -204,10 +190,8 @@ def scrape_google(queries, start_date=None, end_date=None, max_time = 5, num_res
                 #   checking the page isn't the google suggestion box
                 if check_not_relevant(result.text.lower()):
                     continue
-
                 if accepted_results >= num_results:
                     break
-
                 try:
                     title = result.find_element(By.XPATH,'.//a').text
                     #   Getting metadata and the url

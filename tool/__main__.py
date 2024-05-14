@@ -9,7 +9,10 @@ import generate_queries as gen
 import utils
 '''
 TO DO
-    Typecheck before csv processing - not corrupt main file
+    Get selenium to click go away cookie
+    One shot learning, example
+    News search VS just front of google  - look at search bar configuration
+    example request
 '''
 #       IMPORTING, GENERATING & ASSIGNING VARIABLES
 # Loading config file
@@ -25,9 +28,11 @@ max_page_load_wait_time = config_data["maximum page load time"]
 text_to_avoid = config_data["text for web scraper to avoid"]
 small_time_delay = config_data["scraper small time delay"]
 large_time_delay = config_data["scraper large time delay"]
+scrape_news = config_data["check synopsis before passing full article"]
 # API-GPT Behaviour
 chat_gpt_filter_behaviour = '' #TODO
 check_synopsis = config_data["check synopsis before passing full article"]
+oneshot = config_data["use oneshot learning through the example request"]
 # Output configuration
 new_csv_name = config_data["newly generated csv file name"]
 old_csv_name = config_data["continuous csv file name"]
@@ -37,47 +42,41 @@ generated_queries = gen.generate_queries(number_of_queries_generated) if number_
 queries = additional_queries + generated_queries
 tracking_variables, specs, formatted_variables = api.get_variables()
 synopsis_command = api.get_synopsis_filter_command()
-request_example = api.get_request_example() #TODO
+request_example = api.get_request_example()
 request_command = api.get_request_command(tracking_variables, specs)
-scrape_news = config_data["check synopsis before passing full article"]
 
-print(queries, end = '\n\n\n')
-print(synopsis_command, end = '\n\n\n')
-print(formatted_variables, end = '\n\n\n')
 print(request_command, end = '\n\n\n')
 print(queries, end = '\n\n\n')
 
-#       SCRAPING
-# Scraping google for sites and filtering
-scrape.assign_constants(text_to_avoid, small_time_delay, large_time_delay)
-search_results = scrape.scrape_google(queries, max_time = max_page_load_wait_time, num_results=number_of_results, news=scrape_news)  #   Gets websites and urls from specified pages of google
-[result.display(maximum_text_display_length) for result in search_results]
-print("\n\n FINISHED SCRAPING GOOGLE \n\n")
-# Scraping sites
-scrape.scrape_sites(search_results, max_time = max_page_load_wait_time)  #   Accesses links and gets text
-[result.display(maximum_text_display_length) for result in search_results]
-print("\n\n FINISHED SCRAPING SITES \n\n")
+# #       SCRAPING
+# # Scraping google for sites and filtering
+# scrape.assign_constants(text_to_avoid, small_time_delay, large_time_delay)
+# search_results = scrape.scrape_google(queries, max_time = max_page_load_wait_time, num_results=number_of_results, news=scrape_news)  #   Gets websites and urls from specified pages of google
+# [result.display(maximum_text_display_length) for result in search_results]
+# print("\n\n FINISHED SCRAPING GOOGLE \n\n")
+# # Scraping sites
+# scrape.scrape_sites(search_results, max_time = max_page_load_wait_time)  #   Accesses links and gets text
+# [result.display(maximum_text_display_length) for result in search_results]
+# print("\n\n FINISHED SCRAPING SITES \n\n")
 
-"""
-#       API
-# Filtering
-if check_synopsis:
-    api.generate_responses(search_results, synopsis_command, chat_gpt_filter_behaviour, 'filter')
-    search_results = utils.process_data(search_results)
-    [result.display(maximum_text_display_length) for result in search_results]
-# Text Generation
-api.generate_responses(search_results, request_command, chat_gpt_filter_behaviour,'default')
-search_results = utils.process_data(search_results, True, tracking_variables, formatted_variables)
-for result in search_results:
-    del result.text
-    del result.synopsis
-    del result.synopsis_response
-    del result.text_response
-[result.display(maximum_text_display_length) for result in search_results]
-print("\n\n FINISHED API RESPONSE \n\n")
+# #       API
+# # Filtering
+# if check_synopsis:
+#     api.generate_responses(search_results, synopsis_command, chat_gpt_filter_behaviour, 'filter')
+#     search_results = utils.process_data(search_results)
+#     [result.display(maximum_text_display_length) for result in search_results]
+# # Text Generation
+# api.generate_responses(search_results, request_command, chat_gpt_filter_behaviour,'default')
+# search_results = utils.process_data(search_results, True, tracking_variables, formatted_variables)
+# for result in search_results:
+#     del result.text
+#     del result.synopsis
+#     del result.synopsis_response
+#     del result.text_response
+# [result.display(maximum_text_display_length) for result in search_results]
+# print("\n\n FINISHED API RESPONSE \n\n")
 
-#       STORING
-output.assign_constants(new_csv_name,old_csv_name,csv_delimiter)
-output.write_to_csv(search_results)
-print("\n\n FINISHED OUTPUTTING \n\n")
-"""
+# #       STORING
+# output.assign_constants(new_csv_name,old_csv_name,csv_delimiter)
+# output.write_to_csv(search_results)
+# print("\n\n FINISHED OUTPUTTING \n\n")

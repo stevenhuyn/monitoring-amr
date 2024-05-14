@@ -13,4 +13,3 @@ def process_data(search_results, process_variables = False, variables = None, fo
                         result.set_variable(formatted_variables[i],text.split(':')[1].strip())
                         continue
     return valid_results
-

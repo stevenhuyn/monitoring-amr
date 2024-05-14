@@ -35,6 +35,21 @@ def get_request_example(): #TODO
     # return synopsis_command
     return None
 
+'''
+response = client.chat.completions.create(
+  model="gpt-3.5-turbo",
+  messages=[
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": "Who won the world series in 2020?"},
+    {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
+    {"role": "user", "content": "Where was it played?"}
+  ]
+)
+
+
+
+'''
+
 def get_request_command(variables, specs): #TODO
     synopsis_command = ''
     with open(os.path.join('tool','api_commands','request.txt'),'r') as file:

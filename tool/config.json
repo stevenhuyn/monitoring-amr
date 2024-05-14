@@ -2,7 +2,7 @@
     "additional search queries": [
     ],
     "number of search queries generated": 1,
-    "maximum number of urls scraped per google page": 2,
+    "maximum number of urls scraped per google page": 1,
     "maximum text display length" : 500,
     "maximum page load time": 30,
     "newly generated csv file name": "new_amr_monitoring_results.csv",
@@ -19,7 +19,5 @@
     "scrape google news instead of front page of google" : true,
 
     "check synopsis before passing full article" : false,
-
-
-    "george" : 5
+    "use oneshot learning through the example request" : true
 }
