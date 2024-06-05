@@ -84,8 +84,10 @@ def generate_responses(data : list, command_text : str, behaviour_prompt : str, 
             try:
                 completion = client.chat.completions.create(
                 model=gpt_model,
-                messages=message
+                messages=message,
+                max_tokens=4000
                 )
+                print(completion.choices[0].message.content) # TODO
                 search_object.get_synopsis_response(completion.choices[0].message.content) #TODO
             except Exception as e:
                 search_object.get_synopsis_response('')
@@ -95,12 +97,21 @@ def generate_responses(data : list, command_text : str, behaviour_prompt : str, 
             input_text = search_object.text
             message = original_message.copy()
             message[-1]["content"] += input_text
+            # print(message)
             try:
                 completion = client.chat.completions.create(
                 model=gpt_model,
-                messages=message
+                messages=message,
+                max_tokens=4000
                 )
+                # print(completion.choices[0].message.content) # TODO
                 search_object.get_GPT_response(completion.choices[0].message.content) #TODO
             except Exception as e:
                 search_object.get_GPT_response('')
                 print(f"Exception \n :{e}")
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()

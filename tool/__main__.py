@@ -45,18 +45,31 @@ request_command = api.get_request_command(tracking_variables, specs)
 if scrape_news:
     check_synopsis = False
 
+# print(f"\n Oneshot: {oneshot}\n")
+# print(f"\n Queries: {queries}\n")
+# print(f"\n Tracking Variables: {tracking_variables}\n")
+# print(f"\n specs: {specs}\n")
+# print(f"\n formatted variables: {formatted_variables}\n")
+# print(f"\n synopsis: {synopsis_command}\n")
+# print(f"\n example: {request_example}\n")
+# print(f"\n command: {request_command}\n")
+
 #       SCRAPING
 # Scraping google for sites and filtering
+print("\n\n SCRAPING GOOGLE \n\n")
 scrape.assign_constants(text_to_avoid, small_time_delay, large_time_delay)
 search_results = scrape.scrape_google(queries, max_time = max_page_load_wait_time, num_results=number_of_results, news=scrape_news,news_browser=chosen_browser)  #   Gets websites and urls from specified pages of google
 [result.display(maximum_text_display_length) for result in search_results]
 print("\n\n FINISHED SCRAPING GOOGLE \n\n")
 # Scraping sites
+print("\n\n SCRAPING SITES \n\n")
 scrape.scrape_sites(search_results, max_time = max_page_load_wait_time)  #   Accesses links and gets text
 [result.display(maximum_text_display_length) for result in search_results]
 print("\n\n FINISHED SCRAPING SITES \n\n")
+search_results = utils.process_data(search_results,True)
 
 #       API
+print("\n\n GETTING API RESPONSE \n\n")
 # Filtering 
 if check_synopsis:
     api.generate_responses(search_results, synopsis_command, chat_gpt_filter_behaviour, 'filter',oneshot = oneshot,oneshot_message = request_example)
@@ -64,7 +77,7 @@ if check_synopsis:
     [result.display(maximum_text_display_length) for result in search_results]
 # Text Generation
 api.generate_responses(search_results, request_command, chat_gpt_filter_behaviour,'default',oneshot = oneshot,oneshot_message = request_example)
-search_results = utils.process_data(search_results, True, tracking_variables, formatted_variables)
+search_results = utils.process_data(search_results, False, True, tracking_variables, formatted_variables)
 [result.display(maximum_text_display_length) for result in search_results]
 for result in search_results:
     del result.text
@@ -74,6 +87,7 @@ for result in search_results:
 print("\n\n FINISHED API RESPONSE \n\n")
 
 #       STORING
+print("\n\n OUTPUTTING \n\n")
 output.assign_constants(new_csv_name,old_csv_name,csv_delimiter)
 output.write_to_csv(search_results)
 print("\n\n FINISHED OUTPUTTING \n\n")

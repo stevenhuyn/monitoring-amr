@@ -52,3 +52,9 @@ def write_to_csv(data):
             except Exception as e:
                 print(f"The following exception occurred while trying to write the data to the CSV file {e}")
 
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()

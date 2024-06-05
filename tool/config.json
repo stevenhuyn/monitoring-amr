@@ -1,7 +1,7 @@
 {
-    "additional search queries": [
+    "additional search queries": [ "AMR Pathogen Delhi"
     ],
-    "number of search queries generated": 1,
+    "number of search queries generated": 0,
     "maximum number of urls scraped per google page": 6,
     "maximum text display length" : 500,
     "maximum page load time": 30,

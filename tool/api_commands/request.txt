@@ -4,4 +4,4 @@ Please respond with only "Yes." if you are either certain that it does or even i
 If you are certain that it does not then please respond with only "No." 
 Once you've responded in accordance with the above text and only if you answered "Yes.", please extract the following variables in the following format: <v>
 If you happen to be uncertain of any of the values you have been asked to obtain, please only respond with "Not specified" - do not have a pure blank response, respond with "Not specified" if you are uncertain.
-The text is shown below.
+In summary, answer yes or no and then extract the variables above in the format above. The text is shown below.

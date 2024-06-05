@@ -223,9 +223,15 @@ def scrape_sites(search_result_objects, max_time):
             l_selectors = driver.find_elements(By.XPATH, '//body//ol | //body//ul')
             text = '\n'.join([item.text for item in p_selectors + l_selectors ])
             if len(text) < 400:
-                text = '\n'.join([div.text for div in driver.find_elements(By.XPATH, '//body//div')])
+                text = '\n'.join([div.text for div in driver        .find_elements(By.XPATH, '//body//div')])
             search_result.set_site_text(text)
         except Exception as e:
             print(f"An error occurred while extracting text: {e}")
 
     driver.quit()
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()

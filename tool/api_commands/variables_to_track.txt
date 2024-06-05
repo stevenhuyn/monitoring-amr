@@ -14,7 +14,7 @@ Laboratory location (location or name or both of lab doing antimicrobial testing
 Specimen used for testing (Cerebrospinal fluid, Upper respiratory specimen, Lower respiratory tract specimen, Rectal swab, Blood, Tissue biopsy, Stool, Other, Not applicable)
 AMR Event Type (New bacterial pathogen, New fungal pathogen, Increased cases bacterial pathogen, Increased cases fungal pathogen, Reported cases bacterial pathogen, Reported cases fungal pathogen, AMR resistance, Antibiotic use, Antibiotic prescription, Antibiotic over-prescription, Insufficient antibiotic availability, Livestock antibiotic use, Other)
 Infection Origin (Community, healthcare facilities, Other)
-Pathogen Name 
+Pathogen Name (name of the pathogen, scientific or slang)
 Pathogen Type (Bacteria,Fungi,Virus,Parasites,Other)
 Identified Antimicrobial Resistance (name of antimicrobial which has been identified to resist against)
 Number of Deaths (Lower Bound)

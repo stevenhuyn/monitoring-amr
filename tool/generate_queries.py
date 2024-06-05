@@ -40,3 +40,9 @@ def generate_queries(num_queries : int = 1, working_dir : str = "tool", sub_dir 
                     a = b
             queries.append(a)
     return queries
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()
