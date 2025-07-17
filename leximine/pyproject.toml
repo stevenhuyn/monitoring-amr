@@ -4,8 +4,21 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = [
-    "openai>=1.97.0",
-    "python-dotenv>=1.1.1",
-    "selenium>=4.34.2",
-]
+dependencies = ["my-lib"]
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+my-lib = { workspace = true }
+
+
+[project.scripts]
+app = "app:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/app"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
