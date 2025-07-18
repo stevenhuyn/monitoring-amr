@@ -18,42 +18,50 @@ class SeleniumScraper:
             self.driver.get(searchUrl)
             time.sleep(5)
 
-            search_results = self.driver.find_elements(
-                By.XPATH, '//div[@class="m5k28"]'
-            )
+            searchResults = self.driver.find_elements(By.CLASS_NAME, "m5k28")
 
-            for result in search_results:
-                frontPage = result.find_element(By.XPATH, './/div[@class="B6pJDd"]')
-                title = frontPage.text
-                articleUrl = frontPage.find_element(By.CSS_SELECTOR, "a").get_attribute(
-                    "href"
-                )
-                synopsis = result.find_element(
-                    By.XPATH, './/div[@data-snf="nke7rc"]'
-                ).text
+            for searchResult in searchResults:
+                title = searchResult.find_element(By.CLASS_NAME, "JtKRv")
+                if not title:
+                    continue
 
-                articleLink = ArticleLink(query, articleUrl, title, synopsis)
+                title = title.text
+                print(title)
+
+                articleUrl = searchResult.find_element(
+                    By.CSS_SELECTOR, "a"
+                ).get_attribute("href")
+
+                if not articleUrl:
+                    continue
+
+                articleLink = ArticleLink(query, articleUrl, title)
                 articleLinks.append(articleLink)
 
-        self.driver.quit()
-
         articlePages = []
-        for articleLink in articleLinks:
-            self.driver.get(articleLink.url)
-            time.sleep(5)
-            pSelectors = self.driverdriver.find_elements(By.XPATH, "//body//p")
-            listSelectors = self.driverdriver.find_elements(
-                By.XPATH, "//body//ol | //body//ul"
-            )
-            text = "\n".join([item.text for item in pSelectors + listSelectors])
-            if len(text) < 400:
-                text = "\n".join(
-                    [
-                        div.text
-                        for div in self.driver.find_elements(By.XPATH, "//body//div")
-                    ]
+        for articleLink in articleLinks[:3]:
+            try:
+                print(articleLink.url)
+                self.driver.get(articleLink.url)
+                time.sleep(5)
+                pSelectors = self.driver.find_elements(By.XPATH, "//body//p")
+                listSelectors = self.driver.find_elements(
+                    By.XPATH, "//body//ol | //body//ul"
                 )
-            articlePages.append(ArticlePage(articleLink, text))
+                text = "\n".join([item.text for item in pSelectors + listSelectors])
+                if len(text) < 400:
+                    text = "\n".join(
+                        [
+                            div.text
+                            for div in self.driver.find_elements(
+                                By.XPATH, "//body//div"
+                            )
+                        ]
+                    )
+                articlePages.append(ArticlePage(articleLink, text))
+                print(text[:100])
+            except Exception as e:
+                print(e)
 
         self.driver.quit()
 
@@ -70,7 +78,7 @@ class SeleniumScraper:
         }
         # ?hl=en-IN&gl=IN&ceid=IN%3Aen
         scheme, netloc, path, queryString, fragment = urlsplit(
-            "https://news.google.com/search?dog=4"
+            "https://news.google.com/search/"
         )
         queryParams = parse_qs(queryString)
         queryParams.update(searchParams)
@@ -81,22 +89,20 @@ class SeleniumScraper:
 
 
 class ArticleLink:
-    def __init__(self, query, url, title, synopsis):
+    def __init__(self, query, url, title):
         self.query = query
         self.url = url
         self.title = title
-        self.synopsis = synopsis
 
     def __repr__(self):
         return str((self.query, self.url))
 
 
 class ArticlePage:
-    def __init__(self, articleLink, synopsis, content):
+    def __init__(self, articleLink, content):
         self.query = articleLink.query
         self.url = articleLink.url
         self.title = articleLink.title
-        self.synopsis = articleLink.synopsis
         self.content = content
 
     def __repr__(self):

@@ -13,9 +13,9 @@ class Extractor:
         self, article: ArticlePage
     ) -> str | None:  # TODO create a valid outputs class
         systemPrompt = {"role": "system", "content": self.systemPrompt}
-        synopsisCheckPrompt = {
+        filterPrompt = {
             "role": "user",
-            "content": f"{self.synopsisPrompt}\n\n{article.synopsis}",
+            "content": f"{self.synopsisPrompt}\n\n{article.title}",
         }
         extractionPrompt = {
             "role": "user",
@@ -23,7 +23,7 @@ class Extractor:
         }
 
         synposisCheckOutput = self.client.responses.create(
-            model="gpt-4o", input=[systemPrompt, synopsisCheckPrompt]
+            model="gpt-4o", input=[systemPrompt, filterPrompt]
         )
 
         if "no" in synposisCheckOutput.output_text.lower():
