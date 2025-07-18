@@ -1,11 +1,9 @@
-from my_lib import hello, readConfig, seleniumHello
+from my_lib import scraper
 
 
 def main():
-    print("Hello from leximine!")
-    readConfig()
-    seleniumHello()
-    hello()
+    Scraper = scraper.SeleniumScraper()
+    Scraper.scrapeGoogle(["antibiotics"])
 
 
 if __name__ == "__main__":
