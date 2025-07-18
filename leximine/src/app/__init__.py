@@ -1,8 +1,10 @@
-from my_lib import hello
+from my_lib import hello, readConfig, seleniumHello
 
 
 def main():
-    print("Hello from app!")
+    print("Hello from leximine!")
+    readConfig()
+    seleniumHello()
     hello()
 
 
