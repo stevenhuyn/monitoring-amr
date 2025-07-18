@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 class SeleniumScraper:
     def __init__(self):
         self.driver = webdriver.Chrome()
-        self.driver.set_page_load_timeout(5)
+        # self.driver.set_page_load_timeout(5)
 
     def scrapeGoogle(self, queries: List[str]):
         articleLinks = []

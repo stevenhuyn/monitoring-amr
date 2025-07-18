@@ -1,13 +1,13 @@
-from my_lib.scraper import ArticlePage, ArticleResult
+from my_lib.scraper import ArticlePage
 from openai import OpenAI
 
 
 class Extractor:
-    def __init__(self, systemPrompt, behaviourPrompt, synopsisPrompt):
+    def __init__(self, systemPrompt, extractPrompt, filterPrompt):
         self.client = OpenAI()
         self.systemPrompt = systemPrompt
-        self.behaviourPrompt = behaviourPrompt
-        self.synopsisPrompt = synopsisPrompt
+        self.extractPrompt = extractPrompt
+        self.filterPrompt = filterPrompt
 
     def extract(
         self, article: ArticlePage
@@ -15,22 +15,25 @@ class Extractor:
         systemPrompt = {"role": "system", "content": self.systemPrompt}
         filterPrompt = {
             "role": "user",
-            "content": f"{self.synopsisPrompt}\n\n{article.title}",
+            "content": f"{self.filterPrompt}\n\n{article.title}",
         }
-        extractionPrompt = {
+        extractPrompt = {
             "role": "user",
-            "content": f"{self.behaviourPrompt}\n\n{article.content}",
+            "content": f"{self.extractPrompt}\n\n{article.content}",
         }
 
         synposisCheckOutput = self.client.responses.create(
             model="gpt-4o", input=[systemPrompt, filterPrompt]
         )
 
+        print("Filter Check:", synposisCheckOutput.output_text)
+
         if "no" in synposisCheckOutput.output_text.lower():
             return None
 
         featuresOutput = self.client.responses.create(
-            model="gpt-4o", input=[systemPrompt, extractionPrompt]
+            model="gpt-4o",
+            input=[systemPrompt, extractPrompt],
         )
 
-        print(featuresOutput.output_text)
+        return featuresOutput.output_text
