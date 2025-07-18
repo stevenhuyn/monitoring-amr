@@ -1,7 +1,7 @@
 import time
 from typing import List
 from selenium import webdriver
-from urllib.parse import parse_qs, parse_qsl, urlencode, urlsplit, urlunsplit
+from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
 from selenium.webdriver.common.by import By
 
 

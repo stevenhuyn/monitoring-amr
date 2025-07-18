@@ -1,16 +1,16 @@
 [project]
 name = "leximine"
 version = "0.1.0"
-description = "Add your description here"
+description = "Application to scrape the internet for Anti Microbial Resistance related stories around from regions of interest then apply public large language models to extract relevant information from the articles"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["my-lib"]
+dependencies = ["core"]
 
 [tool.uv.workspace]
 members = ["packages/*"]
 
 [tool.uv.sources]
-my-lib = { workspace = true }
+core = { workspace = true }
 
 [project.scripts]
 app = "app:main"

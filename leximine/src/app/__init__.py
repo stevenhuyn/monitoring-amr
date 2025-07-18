@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
-from my_lib.scraper import SeleniumScraper, ArticleLink, ArticlePage
-from my_lib.extractor import Extractor
+from core.scraper import SeleniumScraper, ArticleLink, ArticlePage
+from core.extractor import Extractor
 
 
 def main():
@@ -21,13 +21,6 @@ def main():
         extractPrompt = f.read()
 
     extractor = Extractor(systemPrompt, extractPrompt, filterPrompt)
-
-    exampleArticlePage = ArticlePage(
-        ArticleLink("", "", "SUPER MICROBE FOUND IN DELHI"),
-        "BREAKING NEWS, SUPER MICROBE FOUND IN DELHI, 1000 hospitalised!",
-    )
-
-    articlePages.insert(0, exampleArticlePage)
 
     for articlePage in articlePages:
         print(extractor.extract(articlePage))

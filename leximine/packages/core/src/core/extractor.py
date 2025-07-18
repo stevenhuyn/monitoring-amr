@@ -1,4 +1,4 @@
-from my_lib.scraper import ArticlePage
+from core.scraper import ArticlePage
 from openai import OpenAI
 
 
@@ -11,7 +11,7 @@ class Extractor:
 
     def extract(
         self, article: ArticlePage
-    ) -> str | None:  # TODO create a valid outputs class
+    ) -> str | None:  # TODO create a valid output class
         systemPrompt = {"role": "system", "content": self.systemPrompt}
         filterPrompt = {
             "role": "user",
@@ -22,13 +22,13 @@ class Extractor:
             "content": f"{self.extractPrompt}\n\n{article.content}",
         }
 
-        synposisCheckOutput = self.client.responses.create(
+        filterCheckOutput = self.client.responses.create(
             model="gpt-4o", input=[systemPrompt, filterPrompt]
         )
 
-        print("Filter Check:", synposisCheckOutput.output_text)
+        print("Filter Check:", filterCheckOutput.output_text)
 
-        if "no" in synposisCheckOutput.output_text.lower():
+        if "no" in filterCheckOutput.output_text.lower():
             return None
 
         featuresOutput = self.client.responses.create(

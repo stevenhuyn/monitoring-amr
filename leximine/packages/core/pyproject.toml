@@ -1,8 +1,7 @@
 [project]
-name = "my-lib"
+name = "core"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
+description = "Core libs for leximine"
 requires-python = ">=3.12"
 dependencies = ["openai>=1.97.0", "python-dotenv>=1.1.1", "selenium>=4.34.2"]
 
