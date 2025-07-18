@@ -1,6 +1,8 @@
+import time
 from typing import List
 from selenium import webdriver
-from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+from urllib.parse import parse_qs, parse_qsl, urlencode, urlsplit, urlunsplit
+from selenium.webdriver.common.by import By
 
 
 class SeleniumScraper:
@@ -22,10 +24,20 @@ class SeleniumScraper:
             scheme, netloc, path, queryString, fragment = urlsplit(
                 "https://news.google.com/search?dog=4"
             )
-            queryParams = parse_qsl(queryString)
+            queryParams = parse_qs(queryString)
             queryParams.update(searchParams)
-            newQueryString = urlencode(queryParams, doseq=True)
+            newQueryString = urlencode(queryParams)
 
             searchUrl = urlunsplit((scheme, netloc, path, newQueryString, fragment))
 
-            print(searchUrl)
+            self.driver.get(searchUrl)
+
+            time.sleep(10)
+
+            search_results = self.driver.find_elements(
+                By.XPATH, '//div[@class="m5k28"]'
+            )
+
+            print(search_results)
+
+            self.driver.quit()
