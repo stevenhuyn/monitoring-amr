@@ -5,8 +5,8 @@ from my_lib.extractor import Extractor
 
 def main():
     load_dotenv()
-    # scraper = scraper.SeleniumScraper()
-    # scraper.scrapeGoogle(["antibiotics resistance"])
+    scraper = SeleniumScraper()
+    articlePages = scraper.scrapeGoogle(["antibiotics resistance"])
 
     systemPrompt = None
     with open("./packages/my_lib/src/my_lib/prompts/system.txt", "r") as f:
@@ -27,7 +27,10 @@ def main():
         "BREAKING NEWS, SUPER MICROBE FOUND IN DELHI, 1000 hospitalised!",
     )
 
-    print(extractor.extract(exampleArticlePage))
+    articlePages.insert(0, exampleArticlePage)
+
+    for articlePage in articlePages:
+        print(extractor.extract(articlePage))
 
 
 if __name__ == "__main__":

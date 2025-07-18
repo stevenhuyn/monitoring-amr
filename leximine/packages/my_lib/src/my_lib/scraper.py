@@ -10,7 +10,7 @@ class SeleniumScraper:
         self.driver = webdriver.Chrome()
         # self.driver.set_page_load_timeout(5)
 
-    def scrapeGoogle(self, queries: List[str]):
+    def scrapeGoogle(self, queries: List[str]) -> List["ArticlePage"]:
         articleLinks = []
         for query in queries:
             searchUrl = SeleniumScraper.buildSearchUrl(query)
@@ -67,14 +67,15 @@ class SeleniumScraper:
 
         return articlePages
 
-    def buildSearchUrl(query: str) -> str:
+    @classmethod
+    def buildSearchUrl(cls, query: str) -> str:
         searchParams = {
             # Interface Language
-            "hl": "en-IN",
+            "hl": ["en-IN"],
             # Country of the document
-            "gl": "IN",
-            "ceid": "IN:en",
-            "q": query,
+            "gl": ["IN"],
+            "ceid": ["IN:en"],
+            "q": [query],
         }
         # ?hl=en-IN&gl=IN&ceid=IN%3Aen
         scheme, netloc, path, queryString, fragment = urlsplit(
