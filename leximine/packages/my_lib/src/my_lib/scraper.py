@@ -11,7 +11,7 @@ class SeleniumScraper:
         self.driver.set_page_load_timeout(5)
 
     def scrapeGoogle(self, queries: List[str]):
-        articleResults = []
+        articleLinks = []
         for query in queries:
             searchUrl = SeleniumScraper.buildSearchUrl(query)
             print(searchUrl)
@@ -28,13 +28,36 @@ class SeleniumScraper:
                 articleUrl = frontPage.find_element(By.CSS_SELECTOR, "a").get_attribute(
                     "href"
                 )
-                articleResult = ArticleResult(query, articleUrl, title)
-                articleResults.append(articleResult)
+                synopsis = result.find_element(
+                    By.XPATH, './/div[@data-snf="nke7rc"]'
+                ).text
+
+                articleLink = ArticleLink(query, articleUrl, title, synopsis)
+                articleLinks.append(articleLink)
 
         self.driver.quit()
 
-        for articleResult in articleResults:
-            print(articleResult)
+        articlePages = []
+        for articleLink in articleLinks:
+            self.driver.get(articleLink.url)
+            time.sleep(5)
+            pSelectors = self.driverdriver.find_elements(By.XPATH, "//body//p")
+            listSelectors = self.driverdriver.find_elements(
+                By.XPATH, "//body//ol | //body//ul"
+            )
+            text = "\n".join([item.text for item in pSelectors + listSelectors])
+            if len(text) < 400:
+                text = "\n".join(
+                    [
+                        div.text
+                        for div in self.driver.find_elements(By.XPATH, "//body//div")
+                    ]
+                )
+            articlePages.append(ArticlePage(articleLink, text))
+
+        self.driver.quit()
+
+        return articlePages
 
     def buildSearchUrl(query: str) -> str:
         searchParams = {
@@ -57,11 +80,24 @@ class SeleniumScraper:
         return searchUrl
 
 
-class ArticleResult:
-    def __init__(self, query, url, title):
+class ArticleLink:
+    def __init__(self, query, url, title, synopsis):
         self.query = query
         self.url = url
         self.title = title
+        self.synopsis = synopsis
+
+    def __repr__(self):
+        return str((self.query, self.url))
+
+
+class ArticlePage:
+    def __init__(self, articleLink, synopsis, content):
+        self.query = articleLink.query
+        self.url = articleLink.url
+        self.title = articleLink.title
+        self.synopsis = articleLink.synopsis
+        self.content = content
 
     def __repr__(self):
         return str((self.query, self.url))
