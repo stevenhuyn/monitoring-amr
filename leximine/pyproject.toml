@@ -12,7 +12,6 @@ members = ["packages/*"]
 [tool.uv.sources]
 my-lib = { workspace = true }
 
-
 [project.scripts]
 app = "app:main"
 
